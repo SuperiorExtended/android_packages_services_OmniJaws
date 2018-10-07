@@ -55,7 +55,6 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
 
     public OpenWeatherMapProvider(Context context) {
         super(context);
-        loadKeys();
         mHasAPIKey = getAPIKey() != null;
     }
 
@@ -357,29 +356,7 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
         return -1;
     }
 
-    private void loadKeys() {
-        try {
-            String key = mContext.getResources().getString(R.string.owm_api_key_1);
-            if (!TextUtils.isEmpty(key)) {
-                mKeys.add(key);
-            }
-        } catch (Resources.NotFoundException e) {
-        }
-        try {
-            String key = mContext.getResources().getString(R.string.owm_api_key_2);
-            if (!TextUtils.isEmpty(key)) {
-                mKeys.add(key);
-            }
-        } catch (Resources.NotFoundException e) {
-        }
-    }
-
     private String getAPIKey() {
-        if (mKeys.size() > 0) {
-            int key = mRequestNumber % mKeys.size();
-            log(TAG, "use API key = " + key);
-            return mKeys.get(key);
-        }
         try {
             return mContext.getResources().getString(R.string.owm_api_key);
         } catch (Resources.NotFoundException e) {
