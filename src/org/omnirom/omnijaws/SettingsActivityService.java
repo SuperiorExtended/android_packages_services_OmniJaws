@@ -32,6 +32,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -40,6 +41,7 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -66,6 +68,7 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
     private Preference mUpdateStatus;
     private Handler mHandler = new Handler();
     protected boolean mShowIconPack;
+    private EditTextPreference mOwmKey;
 
     private static final String PREF_KEY_CUSTOM_LOCATION_CITY = "weather_custom_location_city";
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
@@ -147,6 +150,12 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
         }
         mUpdateStatus = findPreference(PREF_KEY_UPDATE_STATUS);
         queryLastUpdateTime();
+
+        mOwmKey = (EditTextPreference) findPreference(Config.PREF_KEY_OWM_KEY);
+        final String customKey = Config.getOwmKey(this);
+        mOwmKey.setSummary(TextUtils.isEmpty(customKey) ?
+                getResources().getString(R.string.service_disabled) : customKey);
+        mOwmKey.setOnPreferenceChangeListener(this);
     }
 
     @Override
@@ -233,6 +242,12 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
             Config.setIconPack(this, value);
             int valueIndex = mWeatherIconPack.findIndexOfValue(value);
             mWeatherIconPack.setSummary(mWeatherIconPack.getEntries()[valueIndex]);
+            return true;
+        } else if (preference == mOwmKey) {
+            String value = (String) newValue;
+            mOwmKey.setSummary(TextUtils.isEmpty(value) ?
+                    getResources().getString(R.string.service_disabled) : value);
+            WeatherService.startUpdate(this);
             return true;
         }
         return false;

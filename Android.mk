@@ -22,4 +22,5 @@ LOCAL_SRC_FILES := $(call all-subdir-java-files)
 LOCAL_PACKAGE_NAME := OmniJaws
 LOCAL_MODULE_TAGS := optional
 LOCAL_SDK_VERSION := system_current
+#LOCAL_DEX_PREOPT := false
 include $(BUILD_PACKAGE)
