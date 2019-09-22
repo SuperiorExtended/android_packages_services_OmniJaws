@@ -89,6 +89,8 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
         addPreferencesFromResource(R.xml.settings);
         final PreferenceScreen prefScreen = getPreferenceScreen();
         mEnable = (SwitchPreference) findPreference(Config.PREF_KEY_ENABLE);
+        mEnable.setChecked(Config.isEnabled(this));
+        mEnable.setOnPreferenceChangeListener(this);
 
         mCustomLocation = (CheckBoxPreference) findPreference(Config.PREF_KEY_CUSTOM_LOCATION);
 
@@ -187,19 +189,6 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
                 }
             }
             return true;
-        } else if (preference == mEnable) {
-            if (mEnable.isChecked()) {
-                if (!mCustomLocation.isChecked()) {
-                    mTriggerUpdate = true;
-                    checkLocationEnabled();
-                } else {
-                    WeatherService.scheduleUpdate(this);
-                }
-            } else {
-                disableService();
-            }
-            queryLastUpdateTime();
-            return true;
         } else if (preference == mUpdateStatus) {
             WeatherService.startUpdate(this);
             queryLastUpdateTime();
@@ -248,6 +237,21 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
             mOwmKey.setSummary(TextUtils.isEmpty(value) ?
                     getResources().getString(R.string.service_disabled) : value);
             WeatherService.startUpdate(this);
+            return true;
+        } else if (preference == mEnable) {
+            boolean value = (Boolean) newValue;
+            Config.setEnabled(this, value);
+            if (value) {
+                if (!mCustomLocation.isChecked()) {
+                    mTriggerUpdate = true;
+                    checkLocationEnabled();
+                } else {
+                    WeatherService.scheduleUpdate(this);
+                }
+            } else {
+                disableService();
+            }
+            queryLastUpdateTime();
             return true;
         }
         return false;
