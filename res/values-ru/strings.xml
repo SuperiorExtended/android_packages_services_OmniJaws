@@ -56,4 +56,5 @@
     <string name="show_background_title">Стиль фона</string>
     <string name="weather_config_title">Параметры службы</string>
     <string name="with_forecast_title">С прогнозом на 4 дня и деталями</string>
+    <string name="owm_key">Пользовательский ключ OWM</string>
 </resources>

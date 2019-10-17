@@ -56,4 +56,5 @@
     <string name="show_background_title">Taustavari</string>
     <string name="weather_config_title">Teenuse seaded</string>
     <string name="with_forecast_title">Nelja päeva ennustuse ja andmetega</string>
+    <string name="owm_key">Kohandatud OWM võti</string>
 </resources>
