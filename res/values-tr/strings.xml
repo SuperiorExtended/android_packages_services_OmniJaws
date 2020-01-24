@@ -22,7 +22,7 @@
     <string name="weather_progress_title">Yer doğrulanıyor</string>
     <string name="weather_select_location">Yer seçin</string>
     <string name="custom_location_title">Özel yer</string>
-    <string name="weather_custom_location_dialog_title">Yer girin</string>
+    <string name="weather_custom_location_dialog_title">Yer dâhil edin</string>
     <string name="weather_custom_location_title">Yer</string>
     <string name="weather_custom_location_missing">Özel yer ayarlayın</string>
     <string name="weather_retrieve_location_dialog_title">Yer alınamıyor!</string>
