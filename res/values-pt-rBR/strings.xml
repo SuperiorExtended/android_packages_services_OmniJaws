@@ -55,4 +55,6 @@
     <string name="show_background_title">Sombreamento</string>
     <string name="weather_config_title">Configurações do serviço</string>
     <string name="with_forecast_title">Com previsão de 4 dias e detalhes</string>
+    <string name="owm_key">Chave OWM personalizada</string>
+    <string name="omnijaws_city_unkown">Desconhecido</string>
 </resources>
