@@ -11,4 +11,7 @@
 
     <style name="Theme.Settings" parent="@android:style/Theme.DeviceDefault.Settings" />
 
+    <style name="ActionPrimaryButton" parent="android:Widget.DeviceDefault.Button.Colored">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 </resources>
