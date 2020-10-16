@@ -20,6 +20,16 @@ include $(CLEAR_VARS)
 LOCAL_JAVA_LIBRARIES := org.apache.http.legacy
 LOCAL_SRC_FILES := $(call all-subdir-java-files)
 LOCAL_PACKAGE_NAME := OmniJaws
+LOCAL_PRODUCT_MODULE := true
 LOCAL_MODULE_TAGS := optional
 LOCAL_SDK_VERSION := system_current
+LOCAL_REQUIRED_MODULES := default_permissions_org.omnirom.omnijaws.xml
 include $(BUILD_PACKAGE)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := default_permissions_org.omnirom.omnijaws.xml
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_PATH := $(TARGET_OUT_PRODUCT_ETC)/default-permissions
+LOCAL_SRC_FILES := $(LOCAL_MODULE)
+include $(BUILD_PREBUILT)
