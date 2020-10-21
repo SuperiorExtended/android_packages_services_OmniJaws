@@ -50,7 +50,8 @@ import org.omnirom.omnijaws.client.OmniJawsClient;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingsActivityService extends PreferenceActivity implements OnPreferenceChangeListener, WeatherLocationTask.Callback  {
+public class SettingsActivityService extends PreferenceActivity implements OnPreferenceChangeListener,
+        WeatherLocationTask.Callback, OmniJawsClient.OmniJawsObserver  {
 
     private static final String CHRONUS_ICON_PACK_INTENT = "com.dvtonder.chronus.ICON_PACK";
     private static final String DEFAULT_WEATHER_ICON_PACKAGE = "org.omnirom.omnijaws";
@@ -60,7 +61,6 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
     private CheckBoxPreference mCustomLocation;
     private ListPreference mUnits;
     private SwitchPreference mEnable;
-    private boolean mTriggerUpdate;
     private boolean mTriggerPermissionCheck;
     private ListPreference mUpdateInterval;
     private CustomLocationPreference mLocation;
@@ -69,6 +69,7 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
     private Handler mHandler = new Handler();
     protected boolean mShowIconPack;
     private EditTextPreference mOwmKey;
+    private OmniJawsClient mWeatherClient;
 
     private static final String PREF_KEY_CUSTOM_LOCATION_CITY = "weather_custom_location_city";
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
@@ -87,6 +88,8 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
 
     private void doLoadPreferences() {
         addPreferencesFromResource(R.xml.settings);
+        mWeatherClient = new OmniJawsClient(this);
+
         final PreferenceScreen prefScreen = getPreferenceScreen();
         mEnable = (SwitchPreference) findPreference(Config.PREF_KEY_ENABLE);
         mEnable.setChecked(Config.isEnabled(this));
@@ -124,7 +127,6 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
         mLocation = (CustomLocationPreference) findPreference(PREF_KEY_CUSTOM_LOCATION_CITY);
         if (mPrefs.getBoolean(Config.PREF_KEY_ENABLE, false)
                 && !mPrefs.getBoolean(Config.PREF_KEY_CUSTOM_LOCATION, false)) {
-            mTriggerUpdate = false;
             checkLocationEnabled();
         }
         mWeatherIconPack = (ListPreference) findPreference(WEATHER_ICON_PACK);
@@ -151,7 +153,6 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
             prefScreen.removePreference(mWeatherIconPack);
         }
         mUpdateStatus = findPreference(PREF_KEY_UPDATE_STATUS);
-        queryLastUpdateTime();
 
         mOwmKey = (EditTextPreference) findPreference(Config.PREF_KEY_OWM_KEY);
         final String customKey = Config.getOwmKey(this);
@@ -163,6 +164,7 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
     @Override
     public void onResume() {
         super.onResume();
+        mWeatherClient.addObserver(this);
         // values can be changed from outside
         getPreferenceScreen().removeAll();
         doLoadPreferences();
@@ -170,6 +172,13 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
             checkLocationPermissions();
             mTriggerPermissionCheck = false;
         }
+        queryAndUpdateWeather();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mWeatherClient.removeObserver(this);
     }
 
     @Override
@@ -177,7 +186,6 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
             Preference preference) {
         if (preference == mCustomLocation) {
             if (!mCustomLocation.isChecked()) {
-                mTriggerUpdate = true;
                 checkLocationEnabled();
             } else {
                 if (Config.getLocationName(this) != null) {
@@ -190,8 +198,7 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
             }
             return true;
         } else if (preference == mUpdateStatus) {
-            WeatherService.startUpdate(this);
-            queryLastUpdateTime();
+            forceRefreshWeatherSettings();
             return true;
         }
         return false;
@@ -208,7 +215,7 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
                 // city ids are provider specific - so we need to recheck
                 new WeatherLocationTask(this, Config.getLocationName(this), this).execute();
             } else {
-                WeatherService.startUpdate(this);
+                forceRefreshWeatherSettings();
             }
             return true;
         } else if (preference == mUnits) {
@@ -216,42 +223,40 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
             int idx = mUnits.findIndexOfValue(value);
             mUnits.setSummary(mUnits.getEntries()[idx]);
             mUnits.setValueIndex(idx);
-            WeatherService.startUpdate(this);
+            forceRefreshWeatherSettings();
             return true;
         } else if (preference == mUpdateInterval) {
             String value = (String) newValue;
             int idx = mUpdateInterval.findIndexOfValue(value);
             mUpdateInterval.setSummary(mUpdateInterval.getEntries()[idx]);
             mUpdateInterval.setValueIndex(idx);
-            WeatherService.scheduleUpdate(this);
-            queryLastUpdateTime();
+            forceRefreshWeatherSettings();
             return true;
         } else if (preference == mWeatherIconPack) {
             String value = (String) newValue;
             Config.setIconPack(this, value);
             int valueIndex = mWeatherIconPack.findIndexOfValue(value);
             mWeatherIconPack.setSummary(mWeatherIconPack.getEntries()[valueIndex]);
+            queryAndUpdateWeather();
             return true;
         } else if (preference == mOwmKey) {
             String value = (String) newValue;
             mOwmKey.setSummary(TextUtils.isEmpty(value) ?
                     getResources().getString(R.string.service_disabled) : value);
-            WeatherService.startUpdate(this);
+            forceRefreshWeatherSettings();
             return true;
         } else if (preference == mEnable) {
             boolean value = (Boolean) newValue;
             Config.setEnabled(this, value);
             if (value) {
                 if (!mCustomLocation.isChecked()) {
-                    mTriggerUpdate = true;
                     checkLocationEnabled();
                 } else {
-                    WeatherService.scheduleUpdate(this);
+                    forceRefreshWeatherSettings();
                 }
             } else {
                 disableService();
             }
-            queryLastUpdateTime();
             return true;
         }
         return false;
@@ -269,7 +274,6 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         mTriggerPermissionCheck = true;
-                        mTriggerUpdate = true;
                         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
@@ -313,10 +317,7 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
             requestPermissions(new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         } else {
-            if (mTriggerUpdate) {
-                WeatherService.scheduleUpdate(this);
-                mTriggerUpdate = false;
-            }
+            queryAndUpdateWeather();
         }
     }
 
@@ -339,10 +340,7 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (mTriggerUpdate) {
-                        WeatherService.scheduleUpdate(this);
-                        mTriggerUpdate = false;
-                    }
+                    forceRefreshWeatherSettings();
                 }
                 break;
             }
@@ -361,7 +359,7 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
         Config.setLocationName(this, result.city);
         mLocation.setText(result.city);
         mLocation.setSummary(result.city);
-        WeatherService.startUpdate(this);
+        forceRefreshWeatherSettings();
     }
 
     private void getAvailableWeatherIconPacks(List<String> entries, List<String> values) {
@@ -398,44 +396,51 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
         }
     }
 
-    private void queryLastUpdateTime() {
-        final AsyncTask<Void, Void, Void> t = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected void onProgressUpdate(Void... values) {
-            }
-            @Override
-            protected Void doInBackground(Void... params) {
-                final String updateTime = getLastUpdateTime();
-                SettingsActivityService.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mUpdateStatus.setSummary(updateTime);
-                    }
-                });
-                return null;
-            }
-        };
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                t.execute();
-            }
-        }, 2000);
+    @Override
+    public void weatherUpdated() {
+        queryAndUpdateWeather();
     }
 
-    private String getLastUpdateTime() {
-        OmniJawsClient mWeatherClient = new OmniJawsClient(this);
-        if (mWeatherClient.isOmniJawsEnabled()) {
-            OmniJawsClient.WeatherInfo mWeatherData = null;
-            try {
-                mWeatherClient.queryWeather();
-                mWeatherData = mWeatherClient.getWeatherInfo();
-                if (mWeatherData != null) {
-                    return mWeatherData.getLastUpdateTime();
-                }
-            } catch(Exception ignored) {
-            }
+    @Override
+    public void weatherError(int errorReason) {
+        String errorString = null;
+        if (errorReason == OmniJawsClient.EXTRA_ERROR_DISABLED) {
+            errorString = getResources().getString(R.string.omnijaws_service_disabled);
+        } else if (errorReason == OmniJawsClient.EXTRA_ERROR_LOCATION){
+            errorString = getResources().getString(R.string.omnijaws_service_error_location);
+        } else if (errorReason == OmniJawsClient.EXTRA_ERROR_NETWORK){
+            errorString = getResources().getString(R.string.omnijaws_service_error_network);
+        } else {
+            errorString = getResources().getString(R.string.omnijaws_service_error_long);
         }
-        return getResources().getString(R.string.service_disabled);
+        if (errorString != null) {
+            final String s = errorString;
+            SettingsActivityService.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mUpdateStatus != null) {
+                        mUpdateStatus.setSummary(s);
+                    }
+                }
+            });
+        }
+    }
+
+    private void queryAndUpdateWeather() {
+        mWeatherClient.queryWeather();
+        if (mWeatherClient.getWeatherInfo() != null) {
+            SettingsActivityService.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mUpdateStatus != null) {
+                        mUpdateStatus.setSummary(mWeatherClient.getWeatherInfo().getLastUpdateTime());
+                    }
+                }
+            });
+        }
+    }
+
+    private void forceRefreshWeatherSettings() {
+        mWeatherClient.updateWeather();
     }
 }

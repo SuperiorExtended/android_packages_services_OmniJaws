@@ -11,7 +11,36 @@
 
     <style name="Theme.Settings" parent="@android:style/Theme.DeviceDefault.Settings" />
 
+    <style name="Theme.Activity" parent="@android:style/Theme.Material.NoActionBar" >
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+
     <style name="ActionPrimaryButton" parent="android:Widget.DeviceDefault.Button.Colored">
         <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="WeatherBaseText" parent="@android:style/TextAppearance.DeviceDefault">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="ForecastWeatherText" parent="@style/WeatherBaseText">
+        <item name="android:textSize">@dimen/forecast_text_size</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="DetailedWeatherText" parent="@style/WeatherBaseText">
+        <item name="android:textSize">@dimen/medium_text_size</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="HeaderWeatherText" parent="@style/WeatherBaseText">
+        <item name="android:textSize">@dimen/header_text_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CurrentWeatherText" parent="@style/WeatherBaseText">
+        <item name="android:textSize">@dimen/big_text_size</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

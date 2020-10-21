@@ -50,10 +50,11 @@
     <string name="service_disabled">Disabled</string>
     <string name="service_error">Error</string>
     <string name="last_update_time">Last update time</string>
+    <string name="omnijaws_service_waiting">Waiting\u2026</string>
     <string name="omnijaws_service_unkown">No weather data</string>
     <string name="omnijaws_service_error">Error loading weather data</string>
-    <string name="omnijaws_service_init">Waiting...</string>
-    <string name="omnijaws_service_progress">Updating...</string>
+    <string name="omnijaws_service_init">Waiting\u2026</string>
+    <string name="omnijaws_service_progress">Updating\u2026</string>
     <string name="omnijaws_service_disabled">Service disabled</string>
     <string name="weather_widget">Weather</string>
     <string name="omnijaws_current_text">Now</string>
@@ -64,5 +65,12 @@
     <string name="with_forecast_title">With 4-day forecast and details</string>
     <string name="owm_key">Custom OWM key</string>
     <string name="omnijaws_city_unkown">Unknown</string>
+    <string name="activity_title">Weather</string>
+    <string name="omnijaws_service_error_long">Error loading weather data</string>
+    <string name="omnijaws_detail_header">Weather</string>
+    <string name="omnijaws_label_default">Weather</string>
+    <string name="omnijaws_service_last_update">Last update:</string>
+    <string name="omnijaws_service_error_location">No location available</string>
+    <string name="omnijaws_service_error_network">No network found</string>
 
 </resources>

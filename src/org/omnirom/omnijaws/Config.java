@@ -37,6 +37,8 @@ public class Config {
     public static final String PREF_KEY_LAST_ALARM = "last_alarm";
     public static final String PREF_KEY_UPDATE_ERROR = "update_error";
     public static final String PREF_KEY_OWM_KEY = "owm_key";
+    public static final String PREF_KEY_HISTORY = "history";
+    public static final String PREF_KEY_HISTORY_SIZE = "history_size";
 
     public static AbstractWeatherProvider getProvider(Context context) {
         SharedPreferences prefs = PreferenceManager
@@ -231,5 +233,33 @@ public class Config {
                 .getDefaultSharedPreferences(context);
 
         return prefs.getString(PREF_KEY_OWM_KEY, null);
+    }
+
+    public static boolean isHistoryOn(Context context) {
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(context);
+
+        return prefs.getBoolean(PREF_KEY_HISTORY, true);
+    }
+
+    public static void setHistoryOn(Context context, boolean value) {
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(context);
+
+        prefs.edit().putBoolean(PREF_KEY_HISTORY, value).commit();
+    }
+
+    public static int getHistorySize(Context context) {
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(context);
+
+        return prefs.getInt(PREF_KEY_HISTORY_SIZE, 24);
+    }
+
+    public static void setHistorySize(Context context, int value) {
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(context);
+
+        prefs.edit().putInt(PREF_KEY_HISTORY_SIZE, value).commit();
     }
 }

@@ -19,6 +19,9 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 LOCAL_JAVA_LIBRARIES := org.apache.http.legacy
 LOCAL_SRC_FILES := $(call all-subdir-java-files)
+LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
+LOCAL_USE_AAPT2 := true
+LOCAL_AAPT_FLAGS := --auto-add-overlay
 LOCAL_PACKAGE_NAME := OmniJaws
 LOCAL_MODULE_TAGS := optional
 LOCAL_SDK_VERSION := system_current
