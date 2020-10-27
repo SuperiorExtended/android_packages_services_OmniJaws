@@ -231,7 +231,7 @@ public class DetailedWeatherView extends FrameLayout {
         final Canvas canvas = new Canvas();
         canvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG,
                 Paint.FILTER_BITMAP_FLAG));
-        final int footerHeight = (int) (getResources().getDimensionPixelSize(R.dimen.medium_text_size) * 1.4);
+        final int footerHeight = (int) (getResources().getDimensionPixelSize(R.dimen.medium_text_size) * 1.2);
         final int imageWidth = image.getIntrinsicWidth();
         final int imageHeight = image.getIntrinsicHeight();
         final TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
