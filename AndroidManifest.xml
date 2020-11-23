@@ -83,6 +83,14 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".weatherclient"
+                android:label="Weather Client" >
+            <intent-filter>
+                <action android:name="org.omnirom.WeatherIconPack" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".outline"
                 android:label="Outline" android:exported="false">
             <intent-filter>
