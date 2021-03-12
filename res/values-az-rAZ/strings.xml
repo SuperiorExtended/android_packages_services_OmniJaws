@@ -45,14 +45,24 @@
     <string name="service_disabled">Deaktivdir</string>
     <string name="service_error">Xəta</string>
     <string name="last_update_time">Son yeniləmə vaxtı</string>
+    <string name="omnijaws_service_waiting">Gözlənilir\u2026</string>
     <string name="omnijaws_service_unkown">Hava məlumatı yoxdur</string>
     <string name="omnijaws_service_error">Hava məlumatı yüklənərkən problem yarandı</string>
-    <string name="omnijaws_service_init">Hava məlumatı üçün gözlənilir...</string>
-    <string name="omnijaws_service_progress">Yenilənir...</string>
+    <string name="omnijaws_service_init">Gözlənilir\u2026</string>
+    <string name="omnijaws_service_progress">Yenilənir\u2026</string>
     <string name="omnijaws_service_disabled">Servis bağlıdır</string>
     <string name="weather_widget">Hava</string>
     <string name="omnijaws_current_text">İndi</string>
     <string name="show_background_title">Arxaplan kölgəsi</string>
     <string name="weather_config_title">Servis parametrləri</string>
     <string name="with_forecast_title">4 günlük hava təxmini və təfsilatları</string>
+    <string name="owm_key">Özəl OWM açarı</string>
+    <string name="omnijaws_city_unkown">Bilinmir</string>
+    <string name="activity_title">Hava</string>
+    <string name="omnijaws_service_error_long">Hava verilənləri yüklənərkən xəta baş verdi</string>
+    <string name="omnijaws_detail_header">Hava</string>
+    <string name="omnijaws_label_default">Hava</string>
+    <string name="omnijaws_service_last_update">Son yeniləmə:</string>
+    <string name="omnijaws_service_error_location">Əlçatan yerləşmə yoxdur</string>
+    <string name="omnijaws_service_error_network">Şəbəkə tapılmadı</string>
 </resources>

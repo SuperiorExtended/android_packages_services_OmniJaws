@@ -25,12 +25,12 @@
     <string name="weather_custom_location_title">場所</string>
     <string name="weather_custom_location_missing">カスタムの場所を設定する</string>
     <string name="weather_retrieve_location_dialog_title">場所を取得できません！</string>
-    <string name="weather_retrieve_location_dialog_message">ネットワーク位置情報が無効です。\n\nカスタムの場所を設定するかネットワーク位置情報を有効にしてください。</string>
+    <string name="weather_retrieve_location_dialog_message">ネットワーク位置情報が無効です。\n\nカスタムの場所を設定するかネットワーク位置情報を有効にして下さい。</string>
     <string name="weather_retrieve_location_dialog_enable_button">有効</string>
     <string name="settings_title">設定</string>
     <string name="auto_update_title">自動更新</string>
-    <string name="unit_metric">摂氏（\u00b0C）</string>
-    <string name="unit_imperial">華氏（\u00b0F）</string>
+    <string name="unit_metric">摂氏 (\u00b0C)</string>
+    <string name="unit_imperial">華氏 (\u00b0F)</string>
     <string name="update">更新</string>
     <string name="enable_title">有効</string>
     <string name="update_interval_title">更新間隔</string>
@@ -45,10 +45,11 @@
     <string name="service_disabled">無効</string>
     <string name="service_error">エラー</string>
     <string name="last_update_time">最終更新日時</string>
+    <string name="omnijaws_service_waiting">待機中\u2026</string>
     <string name="omnijaws_service_unkown">天気データはありません</string>
     <string name="omnijaws_service_error">気象データの読み込みに失敗しました</string>
-    <string name="omnijaws_service_init">気象データを待機しています</string>
-    <string name="omnijaws_service_progress">更新中</string>
+    <string name="omnijaws_service_init">待機中\u2026</string>
+    <string name="omnijaws_service_progress">アップデート中\u2026</string>
     <string name="omnijaws_service_disabled">サービスが無効になっています</string>
     <string name="weather_widget">天気</string>
     <string name="omnijaws_current_text">現在</string>
@@ -57,4 +58,11 @@
     <string name="with_forecast_title">4日間の天気予報と詳細</string>
     <string name="owm_key">カスタム OWM キー</string>
     <string name="omnijaws_city_unkown">不明</string>
+    <string name="activity_title">天気</string>
+    <string name="omnijaws_service_error_long">気象データの読み込みに失敗しました</string>
+    <string name="omnijaws_detail_header">天気</string>
+    <string name="omnijaws_label_default">天気</string>
+    <string name="omnijaws_service_last_update">最終更新日時:</string>
+    <string name="omnijaws_service_error_location">利用可能な場所がありません</string>
+    <string name="omnijaws_service_error_network">ネットワークが見つかりません</string>
 </resources>

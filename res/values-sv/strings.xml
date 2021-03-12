@@ -41,8 +41,6 @@
     <string name="service_error">Fel</string>
     <string name="omnijaws_service_unkown">Ingen väderdata</string>
     <string name="omnijaws_service_error">Fel vid laddande av väderdata</string>
-    <string name="omnijaws_service_init">Väntar på väderdata...</string>
-    <string name="omnijaws_service_progress">Uppdaterar...</string>
     <string name="omnijaws_service_disabled">Tjänst inaktiverad</string>
     <string name="weather_widget">Väder</string>
     <string name="omnijaws_current_text">Nu</string>

@@ -45,10 +45,11 @@
     <string name="service_disabled">Devre dışı</string>
     <string name="service_error">Hatâ</string>
     <string name="last_update_time">Son güncelleme târihi</string>
+    <string name="omnijaws_service_waiting">Bekleniyor\u2026</string>
     <string name="omnijaws_service_unkown">Hava durumu verisi yok</string>
     <string name="omnijaws_service_error">Hava durumu verisi yüklenemedi</string>
-    <string name="omnijaws_service_init">Bekleniyor...</string>
-    <string name="omnijaws_service_progress">Güncelleniyor...</string>
+    <string name="omnijaws_service_init">Bekleniyor\u2026</string>
+    <string name="omnijaws_service_progress">Güncelleniyor\u2026</string>
     <string name="omnijaws_service_disabled">Hizmet devre dışı</string>
     <string name="weather_widget">Hava durumu</string>
     <string name="omnijaws_current_text">Şu ân</string>
@@ -57,4 +58,11 @@
     <string name="with_forecast_title">4 günlük hava tahmini ve teferruatları ile beraber</string>
     <string name="owm_key">Özel OWM anahtarı</string>
     <string name="omnijaws_city_unkown">Bilinmiyor</string>
+    <string name="activity_title">Hava durumu</string>
+    <string name="omnijaws_service_error_long">Hava durumuna dair veriler yüklenemedi</string>
+    <string name="omnijaws_detail_header">Hava durumu</string>
+    <string name="omnijaws_label_default">Hava durumu</string>
+    <string name="omnijaws_service_last_update">Son güncelleme:</string>
+    <string name="omnijaws_service_error_location">Kullanılabilir konum yoktur</string>
+    <string name="omnijaws_service_error_network">Ağ bulunmadı</string>
 </resources>

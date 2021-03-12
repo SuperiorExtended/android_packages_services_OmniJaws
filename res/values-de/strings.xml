@@ -47,8 +47,6 @@
     <string name="last_update_time">Letzte Aktualisierung</string>
     <string name="omnijaws_service_unkown">Keine Wetterdaten</string>
     <string name="omnijaws_service_error">Fehler beim Laden der Wetterdaten</string>
-    <string name="omnijaws_service_init">Warten auf Wetterdaten...</string>
-    <string name="omnijaws_service_progress">Aktualisieren…</string>
     <string name="omnijaws_service_disabled">Dienst deaktiviert</string>
     <string name="weather_widget">Wetter</string>
     <string name="omnijaws_current_text">Jetzt</string>
@@ -57,4 +55,10 @@
     <string name="with_forecast_title">Mit 4-Tage Vorhersage und Details</string>
     <string name="owm_key">Eigener OWM-Schlüssel</string>
     <string name="omnijaws_city_unkown">Unbekannt</string>
+    <string name="activity_title">Wetter</string>
+    <string name="omnijaws_service_error_long">Fehler beim Laden der Wetterdaten</string>
+    <string name="omnijaws_detail_header">Wetter</string>
+    <string name="omnijaws_label_default">Wetter</string>
+    <string name="omnijaws_service_last_update">Letzte Aktualisierung:</string>
+    <string name="omnijaws_service_error_network">Kein Netzwerk gefunden</string>
 </resources>

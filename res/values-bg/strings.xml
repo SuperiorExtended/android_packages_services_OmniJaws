@@ -42,8 +42,6 @@
     <string name="last_update_time">Времето на последното обновяване</string>
     <string name="omnijaws_service_unkown">Няма данни за времето</string>
     <string name="omnijaws_service_error">Грешка, зареждайки данните за времето</string>
-    <string name="omnijaws_service_init">Изчакване...</string>
-    <string name="omnijaws_service_progress">Осъвременява се...</string>
     <string name="omnijaws_service_disabled">Услугата е изключена</string>
     <string name="weather_widget">Времето</string>
     <string name="omnijaws_current_text">Сега</string>

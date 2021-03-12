@@ -47,8 +47,6 @@
     <string name="last_update_time">Ultima actualizare</string>
     <string name="omnijaws_service_unkown">Datele meteo lipsesc</string>
     <string name="omnijaws_service_error">Eroare la încărcarea datelor meteo</string>
-    <string name="omnijaws_service_init">Aşteptare date meteo...</string>
-    <string name="omnijaws_service_progress">Actualizare...</string>
     <string name="omnijaws_service_disabled">Serviciu dezactivat</string>
     <string name="weather_widget">Meteo</string>
     <string name="omnijaws_current_text">Acum</string>

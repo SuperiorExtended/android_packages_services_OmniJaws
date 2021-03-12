@@ -47,8 +47,6 @@
     <string name="last_update_time">Laatste bijgewerkt</string>
     <string name="omnijaws_service_unkown">Geen weer gegevens</string>
     <string name="omnijaws_service_error">Fout bij het laden van weergegevens</string>
-    <string name="omnijaws_service_init">Wachten op weergegevens...</string>
-    <string name="omnijaws_service_progress">Bijwerken...</string>
     <string name="omnijaws_service_disabled">Service uitgeschakeld</string>
     <string name="weather_widget">Weer</string>
     <string name="omnijaws_current_text">Nu</string>
