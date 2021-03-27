@@ -45,12 +45,24 @@
     <string name="service_disabled">Zakázané</string>
     <string name="service_error">Chyba</string>
     <string name="last_update_time">Čas poslednej aktualizácie</string>
+    <string name="omnijaws_service_waiting">Čaká sa\u2026</string>
     <string name="omnijaws_service_unkown">Žiadne údaje o počasí</string>
     <string name="omnijaws_service_error">Chyba pri načítavaní údajov o počasí</string>
+    <string name="omnijaws_service_init">Čaká sa\u2026</string>
+    <string name="omnijaws_service_progress">Aktualizácia\u2026</string>
     <string name="omnijaws_service_disabled">Služba zakázaná</string>
     <string name="weather_widget">Počasie</string>
     <string name="omnijaws_current_text">Teraz</string>
     <string name="show_background_title">Tieň v pozadí</string>
     <string name="weather_config_title">Nastavenia služby</string>
     <string name="with_forecast_title">So 4-dňovou predpoveďou a detailami</string>
+    <string name="owm_key">Vlastný kľúč OWM</string>
+    <string name="omnijaws_city_unkown">Neznáme</string>
+    <string name="activity_title">Počasie</string>
+    <string name="omnijaws_service_error_long">Chyba pri načítavaní údajov o počasí</string>
+    <string name="omnijaws_detail_header">Počasie</string>
+    <string name="omnijaws_label_default">Počasie</string>
+    <string name="omnijaws_service_last_update">Posledná aktualizácia:</string>
+    <string name="omnijaws_service_error_location">Poloha nie je k dispozícii</string>
+    <string name="omnijaws_service_error_network">Nebola nájdená žiadna sieť.</string>
 </resources>

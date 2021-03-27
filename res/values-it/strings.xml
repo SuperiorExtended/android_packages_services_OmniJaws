@@ -45,12 +45,24 @@
     <string name="service_disabled">Disabilitato</string>
     <string name="service_error">Errore</string>
     <string name="last_update_time">Data ultimo aggiornamento</string>
+    <string name="omnijaws_service_waiting">In attesa\u2026</string>
     <string name="omnijaws_service_unkown">Dati meteo non disponibili</string>
     <string name="omnijaws_service_error">Errore durante il caricamento dei dati meteo</string>
+    <string name="omnijaws_service_init">In attesa\u2026</string>
+    <string name="omnijaws_service_progress">Aggiornamento\u2026</string>
     <string name="omnijaws_service_disabled">Servizio disabilitato</string>
     <string name="weather_widget">Meteo</string>
     <string name="omnijaws_current_text">Adesso</string>
     <string name="show_background_title">Ombra dello sfondo</string>
     <string name="weather_config_title">Impostazioni servizio</string>
     <string name="with_forecast_title">Con previsioni a 4 giorni e dettagli</string>
+    <string name="owm_key">Chiave OWM personalizzata</string>
+    <string name="omnijaws_city_unkown">Sconosciuta</string>
+    <string name="activity_title">Meteo</string>
+    <string name="omnijaws_service_error_long">Errore durante il caricamento dei dati meteo</string>
+    <string name="omnijaws_detail_header">Meteo</string>
+    <string name="omnijaws_label_default">Meteo</string>
+    <string name="omnijaws_service_last_update">Ultimo aggiornamento:</string>
+    <string name="omnijaws_service_error_location">Nessuna posizione disponibile</string>
+    <string name="omnijaws_service_error_network">Nessuna rete trovata</string>
 </resources>
