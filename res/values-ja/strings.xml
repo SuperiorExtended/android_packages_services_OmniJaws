@@ -24,7 +24,7 @@
     <string name="weather_custom_location_dialog_title">場所を入力</string>
     <string name="weather_custom_location_title">場所</string>
     <string name="weather_custom_location_missing">カスタムの場所を設定する</string>
-    <string name="weather_retrieve_location_dialog_title">場所を取得できません！</string>
+    <string name="weather_retrieve_location_dialog_title">位置情報を取得できません!</string>
     <string name="weather_retrieve_location_dialog_message">ネットワーク位置情報が無効です。\n\nカスタムの場所を設定するかネットワーク位置情報を有効にして下さい。</string>
     <string name="weather_retrieve_location_dialog_enable_button">有効</string>
     <string name="settings_title">設定</string>
