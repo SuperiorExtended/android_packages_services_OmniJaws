@@ -39,20 +39,10 @@ public class Config {
 
     public static AbstractWeatherProvider getProvider(Context context) {
         return new OpenWeatherMapProvider(context);
-                /*.getDefaultSharedPreferences(context);
-
-        if (prefs.getString(PREF_KEY_PROVIDER, "0").equals("1")) {
-            return new OpenWeatherMapProvider(context);
-        }
-        return new YahooWeatherProvider(context);*/
     }
 
     public static String getProviderId(Context context) {
         return "OpenWeatherMap";
-                /*.getDefaultSharedPreferences(context);
-
-        String provider = prefs.getString(PREF_KEY_PROVIDER, "0");
-        return provider.equals("1") ? "OpenWeatherMap" : "Yahoo";*/
     }
 
     public static boolean isMetric(Context context) {
