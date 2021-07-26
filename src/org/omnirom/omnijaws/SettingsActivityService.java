@@ -42,6 +42,10 @@ import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 
 import org.omnirom.omnijaws.client.OmniJawsClient;
 
@@ -84,6 +88,12 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
 
     private void doLoadPreferences() {
         addPreferencesFromResource(R.xml.settings);
+
+	//Remove those ugly dividers!!!
+	ListView lv = getListView();
+        lv.setDivider(new ColorDrawable(Color.TRANSPARENT));
+        lv.setDividerHeight(0);
+
         final PreferenceScreen prefScreen = getPreferenceScreen();
         mEnable = (SwitchPreference) findPreference(Config.PREF_KEY_ENABLE);
 
