@@ -47,6 +47,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import org.omnirom.omnijaws.R;
+import org.omnirom.omnijaws.client.OmniJawsClient;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -201,10 +202,6 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
         OmniJawsClient weatherClient = new OmniJawsClient(context);
         weatherClient.queryWeather();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String iconPack = prefs.getString(WeatherAppWidgetConfigure.KEY_ICON_PACK + "_" + appWidgetId, "");
-        if (!TextUtils.isEmpty(iconPack)) {
-            weatherClient.loadIconPackage(iconPack);
-        }
 
         RemoteViews widget = new RemoteViews(context.getPackageName(), R.layout.weather_appwidget);
         widget.setImageViewBitmap(R.id.refresh, shadow(context.getResources(),

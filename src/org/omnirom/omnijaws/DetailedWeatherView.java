@@ -138,10 +138,6 @@ public class DetailedWeatherView extends FrameLayout {
 
     public void updateWeatherData(OmniJawsClient.WeatherInfo weatherData) {
         if (DEBUG) Log.d(TAG, "updateWeatherData");
-        String iconPack = Config.getIconPack(getContext());
-        if (!TextUtils.isEmpty(iconPack)) {
-            mWeatherClient.loadIconPackage(iconPack);
-        }
         mActivity.updateHourColor();
         mProgressContainer.setVisibility(View.GONE);
 

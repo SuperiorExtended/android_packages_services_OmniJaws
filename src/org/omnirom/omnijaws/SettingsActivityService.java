@@ -42,6 +42,7 @@ import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -80,6 +81,8 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mWeatherClient = new OmniJawsClient(this);
+
         if (getActionBar() != null) {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -88,7 +91,6 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
 
     private void doLoadPreferences() {
         addPreferencesFromResource(R.xml.settings);
-        mWeatherClient = new OmniJawsClient(this);
 
         final PreferenceScreen prefScreen = getPreferenceScreen();
         mEnable = (SwitchPreference) findPreference(Config.PREF_KEY_ENABLE);
@@ -237,7 +239,7 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
             Config.setIconPack(this, value);
             int valueIndex = mWeatherIconPack.findIndexOfValue(value);
             mWeatherIconPack.setSummary(mWeatherIconPack.getEntries()[valueIndex]);
-            queryAndUpdateWeather();
+            forceRefreshWeatherSettings();
             return true;
         } else if (preference == mOwmKey) {
             String value = (String) newValue;
@@ -287,7 +289,7 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.main, menu);
+        //getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -297,19 +299,19 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
             case android.R.id.home:
                 finish();
                 return true;
-            case R.id.playstore:
+            /*case R.id.playstore:
                 launchPlaystore();
-                return true;
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void launchPlaystore() {
+    /*private void launchPlaystore() {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse("market://search?q=Chronus+icons&c=apps"));
         startActivity(intent);
-    }
+    }*/
 
     private void checkLocationPermissions() {
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)

@@ -39,6 +39,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.omnirom.omnijaws.R;
@@ -80,7 +81,8 @@ public class OmniJawsClient {
             "enabled",
             "units",
             "provider",
-            "setup"
+            "setup",
+            "icon_pack"
     };
 
     private static final String WEATHER_UPDATE = "org.omnirom.omnijaws.WEATHER_UPDATE";
@@ -102,9 +104,10 @@ public class OmniJawsClient {
         public String windUnits;
         public String provider;
         public String pinWheel;
+        public String iconPack;
 
         public String toString() {
-            return city + ":" + new Date(timeStamp) + ": " + windSpeed + ":" + windDirection + ":" +conditionCode + ":" + temp + ":" + humidity + ":" + condition + ":" + tempUnits + ":" + windUnits + ": " + forecasts;
+            return city + ":" + new Date(timeStamp) + ": " + windSpeed + ":" + windDirection + ":" +conditionCode + ":" + temp + ":" + humidity + ":" + condition + ":" + tempUnits + ":" + windUnits + ": " + forecasts + ": " + iconPack;
         }
 
         public String getLastUpdateTime() {
@@ -167,16 +170,6 @@ public class OmniJawsClient {
         mObserver = new ArrayList<OmniJawsObserver>();
     }
 
-    public void cleanupObserver() {
-        if (mReceiver != null) {
-            try {
-                mContext.unregisterReceiver(mReceiver);
-            } catch (Exception e) {
-            }
-            mReceiver = null;
-        }
-    }
-
     public void updateWeather() {
         if (isOmniJawsServiceInstalled()) {
             Intent updateIntent = new Intent(Intent.ACTION_MAIN)
@@ -184,15 +177,6 @@ public class OmniJawsClient {
             updateIntent.setAction(SERVICE_PACKAGE + ".ACTION_UPDATE");
             mContext.startService(updateIntent);
         }
-    }
-
-    public Intent getServiceSettingsIntent() {
-        if (isOmniJawsServiceInstalled()) {
-            Intent settings = new Intent(Intent.ACTION_MAIN)
-                    .setClassName("org.omnirom.omnijaws", "org.omnirom.omnijaws.SettingsActivityService");
-            return settings;
-        }
-        return null;
     }
 
     public Intent getSettingsIntent() {
@@ -225,46 +209,70 @@ public class OmniJawsClient {
             mCachedInfo = null;
             return;
         }
-        Cursor c = mContext.getContentResolver().query(WEATHER_URI, WEATHER_PROJECTION,
-                null, null, null);
-        mCachedInfo = null;
-        if (c != null) {
-            try {
-                int count = c.getCount();
-                if (count > 0) {
-                    mCachedInfo = new WeatherInfo();
-                    List<DayForecast> forecastList = new ArrayList<DayForecast>();
-                    int i = 0;
-                    for (i = 0; i < count; i++) {
-                        c.moveToPosition(i);
-                        if (i == 0) {
-                            mCachedInfo.city = c.getString(0);
-                            mCachedInfo.windSpeed = getFormattedValue(c.getFloat(1));
-                            mCachedInfo.windDirection = String.valueOf(c.getInt(2)) + "\u00b0";
-                            mCachedInfo.conditionCode = c.getInt(3);
-                            mCachedInfo.temp = getFormattedValue(c.getFloat(4));
-                            mCachedInfo.humidity = c.getString(5);
-                            mCachedInfo.condition = c.getString(6);
-                            mCachedInfo.timeStamp = Long.valueOf(c.getString(11));
-                            mCachedInfo.pinWheel = c.getString(13);
-                        } else {
-                            DayForecast day = new DayForecast();
-                            day.low = getFormattedValue(c.getFloat(7));
-                            day.high = getFormattedValue(c.getFloat(8));
-                            day.condition = c.getString(9);
-                            day.conditionCode = c.getInt(10);
-                            day.date = c.getString(12);
-                            forecastList.add(day);
+        try {
+            mCachedInfo = null;
+            Cursor c = mContext.getContentResolver().query(WEATHER_URI, WEATHER_PROJECTION,
+                    null, null, null);
+            if (c != null) {
+                try {
+                    int count = c.getCount();
+                    if (count > 0) {
+                        mCachedInfo = new WeatherInfo();
+                        List<DayForecast> forecastList = new ArrayList<DayForecast>();
+                        int i = 0;
+                        for (i = 0; i < count; i++) {
+                            c.moveToPosition(i);
+                            if (i == 0) {
+                                mCachedInfo.city = c.getString(0);
+                                mCachedInfo.windSpeed = getFormattedValue(c.getFloat(1));
+                                mCachedInfo.windDirection = String.valueOf(c.getInt(2)) + "\u00b0";
+                                mCachedInfo.conditionCode = c.getInt(3);
+                                mCachedInfo.temp = getFormattedValue(c.getFloat(4));
+                                mCachedInfo.humidity = c.getString(5);
+                                mCachedInfo.condition = c.getString(6);
+                                mCachedInfo.timeStamp = Long.valueOf(c.getString(11));
+                                mCachedInfo.pinWheel = c.getString(13);
+                            } else {
+                                DayForecast day = new DayForecast();
+                                day.low = getFormattedValue(c.getFloat(7));
+                                day.high = getFormattedValue(c.getFloat(8));
+                                day.condition = c.getString(9);
+                                day.conditionCode = c.getInt(10);
+                                day.date = c.getString(12);
+                                forecastList.add(day);
+                            }
+                        }
+                        mCachedInfo.forecasts = forecastList;
+                    }
+                } finally {
+                    c.close();
+                }
+            }
+            c = mContext.getContentResolver().query(SETTINGS_URI, SETTINGS_PROJECTION,
+                        null, null, null);
+            if (c != null) {
+                try {
+                    int count = c.getCount();
+                    if (count == 1) {
+                        c.moveToPosition(0);
+                        mMetric = c.getInt(1) == 0;
+                        if (mCachedInfo != null) {
+                            mCachedInfo.tempUnits = getTemperatureUnit();
+                            mCachedInfo.windUnits = getWindUnit();
+                            mCachedInfo.provider = c.getString(2);
+                            mCachedInfo.iconPack = c.getString(4);
                         }
                     }
-                    mCachedInfo.forecasts = forecastList;
+                } finally {
+                    c.close();
                 }
-            } finally {
-                c.close();
             }
+
+            if (DEBUG) Log.d(TAG, "queryWeather " + mCachedInfo);
+            updateSettings();
+        } catch (Exception e) {
+            Log.e(TAG, "queryWeather", e);
         }
-        updateUnits();
-        if (DEBUG) Log.d(TAG, "queryWeather " + mCachedInfo);
     }
 
     private void loadDefaultIconsPackage() {
@@ -304,8 +312,7 @@ public class OmniJawsClient {
         return new ColorDrawable(Color.RED);
     }
 
-    public void loadIconPackage(String iconPack) {
-        mSettingIconPackage = iconPack;
+    private void loadCustomIconPackage() {
         int idx = mSettingIconPackage.lastIndexOf(".");
         mPackageName = mSettingIconPackage.substring(0, idx);
         mIconPrefix = mSettingIconPackage.substring(idx + 1);
@@ -403,26 +410,6 @@ public class OmniJawsClient {
         return true;
     }
 
-    private void updateUnits() {
-        if (!isOmniJawsServiceInstalled()) {
-            return;
-        }
-        final Cursor c = mContext.getContentResolver().query(SETTINGS_URI, SETTINGS_PROJECTION,
-                null, null, null);
-        if (c != null) {
-            int count = c.getCount();
-            if (count == 1) {
-                c.moveToPosition(0);
-                mMetric = c.getInt(1) == 0;
-                if (mCachedInfo != null) {
-                    mCachedInfo.tempUnits = getTemperatureUnit();
-                    mCachedInfo.windUnits = getWindUnit();
-                    mCachedInfo.provider = c.getString(2);
-                }
-            }
-        }
-    }
-
     private String getTemperatureUnit() {
         return "\u00b0" + (mMetric ? "C" : "F");
     }
@@ -443,6 +430,16 @@ public class OmniJawsClient {
         }
     }
 
+    private void updateSettings() {
+        final String iconPack = mCachedInfo != null ? mCachedInfo.iconPack : null;
+        if (TextUtils.isEmpty(iconPack)) {
+            loadDefaultIconsPackage();
+        } else if (mSettingIconPackage == null || !iconPack.equals(mSettingIconPackage)) {
+            mSettingIconPackage = iconPack;
+            loadCustomIconPackage();
+        }
+    }
+
     public void addObserver(OmniJawsObserver observer) {
         if (mObserver.size() == 0) {
             if (mReceiver != null) {
@@ -455,6 +452,7 @@ public class OmniJawsClient {
             IntentFilter filter = new IntentFilter();
             filter.addAction(WEATHER_UPDATE);
             filter.addAction(WEATHER_ERROR);
+            if (DEBUG) Log.d(TAG, "addObserver " + this + " " + mReceiver);
             mContext.registerReceiver(mReceiver, filter);
         }
         mObserver.add(observer);
@@ -464,6 +462,7 @@ public class OmniJawsClient {
         mObserver.remove(observer);
         if (mObserver.size() == 0 && mReceiver != null) {
             try {
+                if (DEBUG) Log.d(TAG, "removeObserver " + this + " " + mReceiver);
                 mContext.unregisterReceiver(mReceiver);
             } catch (Exception e) {
             }

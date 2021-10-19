@@ -58,6 +58,7 @@ public class WeatherContentProvider extends ContentProvider {
     private static final String COLUMN_UNITS = "units";
     private static final String COLUMN_LOCATION = "location";
     private static final String COLUMN_SETUP = "setup";
+    private static final String COLUMN_ICON_PACK = "icon_pack";
 
     private static final String[] PROJECTION_DEFAULT_WEATHER = new String[] {
             COLUMN_CURRENT_CITY_ID,
@@ -83,7 +84,8 @@ public class WeatherContentProvider extends ContentProvider {
             COLUMN_INTERVAL,
             COLUMN_UNITS,
             COLUMN_LOCATION,
-            COLUMN_SETUP
+            COLUMN_SETUP,
+            COLUMN_ICON_PACK
     };
 
     public static final String AUTHORITY = "org.omnirom.omnijaws.provider";
@@ -124,7 +126,8 @@ public class WeatherContentProvider extends ContentProvider {
                     .add(COLUMN_INTERVAL, Config.getUpdateInterval(mContext))
                     .add(COLUMN_UNITS, Config.isMetric(mContext) ? 0 : 1)
                     .add(COLUMN_LOCATION, Config.isCustomLocation(mContext) ? Config.getLocationName(mContext) : "")
-                    .add(COLUMN_SETUP, !Config.isSetupDone(mContext) && sCachedWeatherInfo == null ? 0 : 1);
+                    .add(COLUMN_SETUP, !Config.isSetupDone(mContext) && sCachedWeatherInfo == null ? 0 : 1)
+                    .add(COLUMN_ICON_PACK, Config.getIconPack(mContext) != null ? Config.getIconPack(mContext) : "");
 
             return result;
         } else if (projectionType == URI_TYPE_WEATHER) {

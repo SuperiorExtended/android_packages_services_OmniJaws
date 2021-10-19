@@ -18,10 +18,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/weather_widget">
 
-    <ListPreference
-        android:key="weather_icon_pack"
-        android:title="@string/weather_icon_pack_title" />
-
     <CheckBoxPreference
         android:key="show_background"
         android:title="@string/show_background_title" />
@@ -36,7 +32,7 @@
         android:title="@string/weather_config_title">
         <intent
             android:action="android.intent.action.MAIN"
-            android:targetClass="org.omnirom.omnijaws.SettingsActivityService"
+            android:targetClass="org.omnirom.omnijaws.SettingsActivity"
             android:targetPackage="org.omnirom.omnijaws" />
     </PreferenceScreen>
 
