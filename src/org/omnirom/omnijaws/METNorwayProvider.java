@@ -396,7 +396,8 @@ public class METNorwayProvider extends AbstractWeatherProvider {
         try {
             List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
             if(listAddresses != null && listAddresses.size() > 0){
-                return listAddresses.get(0).getLocality();
+                Address a = listAddresses.get(0);
+                return TextUtils.isEmpty(a.getLocality()) ? a.getAdminArea() : a.getLocality();
             }
         } catch (IOException e) {
             e.printStackTrace();
