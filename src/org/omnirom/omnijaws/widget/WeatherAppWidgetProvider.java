@@ -208,13 +208,15 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
         Intent refreshIntent = new Intent();
         refreshIntent.setAction(REFRESH_BROADCAST);
         widget.setOnClickPendingIntent(R.id.refresh,
-                PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                PendingIntent.getBroadcast(context, 0, refreshIntent,
+                      PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
         widget.setViewVisibility(R.id.refresh, View.VISIBLE);
 
         Intent configureIntent = new Intent(context, WeatherAppWidgetConfigure.class);
         configureIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         widget.setOnClickPendingIntent(R.id.weather_data,
-                PendingIntent.getActivity(context, 0, configureIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                PendingIntent.getActivity(context, 0, configureIntent,
+                      PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
 
         boolean withForcast = prefs.getBoolean(WeatherAppWidgetConfigure.KEY_WITH_FORECAST + "_" + appWidgetId, true);
 

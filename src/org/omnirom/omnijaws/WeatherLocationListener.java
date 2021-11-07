@@ -86,7 +86,7 @@ class WeatherLocationListener implements LocationListener {
         intent.setAction(WeatherService.ACTION_CANCEL_LOCATION_UPDATE);
 
         mTimeoutIntent = PendingIntent.getService(mContext, 0, intent,
-                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         AlarmManager am = (AlarmManager) mContext.getSystemService(WeatherService.ALARM_SERVICE);
         long elapseTime = SystemClock.elapsedRealtime() + WeatherService.LOCATION_REQUEST_TIMEOUT;
