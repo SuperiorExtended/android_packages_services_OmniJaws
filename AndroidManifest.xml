@@ -36,17 +36,6 @@
         </activity>
 
         <activity
-            android:name=".SettingsActivityService"
-            android:exported="true"
-            android:label="@string/settings_title"
-            android:theme="@style/Theme.Settings" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name=".WeatherActivity"
             android:exported="true"
             android:label="@string/activity_title"
@@ -54,7 +43,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
             </intent-filter>
         </activity>
 

@@ -51,8 +51,8 @@ public class WeatherActivity extends Activity implements OmniJawsClient.OmniJaws
         settings.setOnClickListener(v -> {
             startActivity(mWeatherClient.getSettingsIntent());
         });
-        View empty = findViewById(R.id.empty_weather_image);
-        empty.setOnClickListener(v -> {
+        View statusView = findViewById(R.id.status_view);
+        statusView.setOnClickListener(v -> {
             startActivity(mWeatherClient.getSettingsIntent());
         });
         View refresh = findViewById(R.id.refresh);

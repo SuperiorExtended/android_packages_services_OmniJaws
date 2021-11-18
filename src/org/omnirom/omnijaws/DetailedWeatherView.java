@@ -131,7 +131,7 @@ public class DetailedWeatherView extends FrameLayout {
         mCurrentWindDirection = (TextView) findViewById(R.id.current_wind_direction);
         mLastUpdate = findViewById(R.id.last_update);
         mStatusMsg = (TextView) findViewById(R.id.status_msg);
-        mEmptyView = findViewById(android.R.id.empty);
+        mEmptyView = findViewById(R.id.status_view);
         mEmptyViewImage = (ImageView) findViewById(R.id.empty_weather_image);
         mWeatherLine = findViewById(R.id.current_weather);
     }
