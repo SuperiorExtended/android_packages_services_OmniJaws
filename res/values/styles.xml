@@ -9,7 +9,9 @@
         <item name="android:shadowRadius">5</item>
     </style>
 
-    <style name="Theme.Settings" parent="@android:style/Theme.DeviceDefault.Settings" />
+    <style name="Theme.Settings" parent="@android:style/Theme.DeviceDefault.Settings" >
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
 
     <style name="Theme.Activity" parent="@android:style/Theme.Material.NoActionBar" >
         <item name="android:windowLightStatusBar">false</item>

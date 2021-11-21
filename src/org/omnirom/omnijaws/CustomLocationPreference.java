@@ -16,17 +16,27 @@
 
 package org.omnirom.omnijaws;
 
+import static android.text.InputType.TYPE_CLASS_TEXT;
+import static android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES;
+
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+
+import androidx.annotation.CallSuper;
+import androidx.preference.EditTextPreference;
+import androidx.preference.EditTextPreferenceDialogFragment;
 
 public class CustomLocationPreference extends EditTextPreference implements WeatherLocationTask.Callback {
-    private AlertDialog mDialog;
+    private CustomLocationPreferenceDialogFragment mFragment;
+
     public CustomLocationPreference(Context context) {
         super(context);
     }
@@ -36,10 +46,14 @@ public class CustomLocationPreference extends EditTextPreference implements Weat
     public CustomLocationPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
+    public CustomLocationPreference(Context context, AttributeSet attrs, int defStyleAttr,
+            int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+    }
 
     @Override
-    protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-        super.onSetInitialValue(restoreValue, defaultValue);
+    protected void onSetInitialValue(Object defaultValue) {
+        super.onSetInitialValue(defaultValue);
         String location = Config.getLocationName(getContext());
         if (location != null) {
             setSummary(location);
@@ -47,46 +61,63 @@ public class CustomLocationPreference extends EditTextPreference implements Weat
             setSummary(R.string.weather_custom_location_missing);
         }
     }
-    @Override
-    protected void showDialog(Bundle state) {
-        super.showDialog(state);
 
-        mDialog = (AlertDialog) getDialog();
-        Button okButton = mDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-
-        okButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CustomLocationPreference.this.onClick(mDialog, DialogInterface.BUTTON_POSITIVE);
-                if (getEditText().getText().toString().length() > 0) {
-                    new WeatherLocationTask(getContext(), getEditText().getText().toString(),
-                            CustomLocationPreference.this).execute();
-                } else {
-                    Config.setLocationId(getContext(), null);
-                    Config.setLocationName(getContext(), null);
-                    setSummary("");
-                    setText("");
-                    mDialog.dismiss();
-                }
+    public EditText getEditText() {
+        if (mFragment != null) {
+            final Dialog dialog = mFragment.getDialog();
+            if (dialog != null) {
+                return (EditText) dialog.findViewById(android.R.id.edit);
             }
-        });
+        }
+        return null;
     }
 
-    @Override
-    protected void onBindDialogView(View view) {
-        super.onBindDialogView(view);
+    public boolean isDialogOpen() {
+        return getDialog() != null && getDialog().isShowing();
+    }
 
-        String location = Config.getLocationName(getContext());
-        if (location != null) {
-            getEditText().setText(location);
-            getEditText().setSelection(location.length());
+    public Dialog getDialog() {
+        return mFragment != null ? mFragment.getDialog() : null;
+    }
+
+    protected void onPrepareDialogBuilder(AlertDialog.Builder builder,
+            DialogInterface.OnClickListener listener) {
+    }
+
+    protected void onDialogClosed(boolean positiveResult) {
+    }
+
+    protected void onClick(DialogInterface dialog, int which) {
+        if (which == DialogInterface.BUTTON_POSITIVE) {
+            if (getEditText().getText().toString().length() > 0) {
+                new WeatherLocationTask(getContext(), getEditText().getText().toString(),
+                        CustomLocationPreference.this).execute();
+            } else {
+                Config.setLocationId(getContext(), null);
+                Config.setLocationName(getContext(), null);
+                setSummary("");
+                setText("");
+            }
         }
     }
 
-    @Override
-    protected void onDialogClosed(boolean positiveResult) {
-        // we handle persisting the selected location below, so pretend cancel
-        super.onDialogClosed(false);
+    @CallSuper
+    protected void onBindDialogView(View view) {
+        final EditText editText = view.findViewById(android.R.id.edit);
+        if (editText != null) {
+            editText.setInputType(TYPE_CLASS_TEXT);
+            editText.requestFocus();
+
+            String location = Config.getLocationName(getContext());
+            if (location != null) {
+                editText.setText(location);
+                editText.setSelection(location.length());
+            }
+        }
+    }
+
+    private void setFragment(CustomLocationPreferenceDialogFragment fragment) {
+        mFragment = fragment;
     }
 
     @Override
@@ -94,8 +125,47 @@ public class CustomLocationPreference extends EditTextPreference implements Weat
         Config.setLocationId(getContext(), result.id);
         Config.setLocationName(getContext(), result.city);
         setText(result.city);
-        mDialog.dismiss();
         setSummary(result.city);
         WeatherService.startUpdate(getContext());
+    }
+
+    public static class CustomLocationPreferenceDialogFragment extends EditTextPreferenceDialogFragment {
+
+        public static CustomLocationPreferenceDialogFragment newInstance(String key) {
+            final CustomLocationPreferenceDialogFragment fragment = new CustomLocationPreferenceDialogFragment();
+            final Bundle b = new Bundle(1);
+            b.putString(ARG_KEY, key);
+            fragment.setArguments(b);
+            return fragment;
+        }
+
+        private CustomLocationPreference getCustomizablePreference() {
+            return (CustomLocationPreference) getPreference();
+        }
+
+        @Override
+        protected void onBindDialogView(View view) {
+            super.onBindDialogView(view);
+            getCustomizablePreference().onBindDialogView(view);
+        }
+
+        @Override
+        protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
+            super.onPrepareDialogBuilder(builder);
+            getCustomizablePreference().setFragment(this);
+            getCustomizablePreference().onPrepareDialogBuilder(builder, this);
+        }
+
+        @Override
+        public void onDialogClosed(boolean positiveResult) {
+            super.onDialogClosed(positiveResult);
+            getCustomizablePreference().onDialogClosed(positiveResult);
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            super.onClick(dialog, which);
+            getCustomizablePreference().onClick(dialog, which);
+        }
     }
 }
