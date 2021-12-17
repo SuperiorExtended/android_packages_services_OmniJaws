@@ -135,7 +135,8 @@ public class WeatherService extends Service {
     private static PendingIntent alarmPending(Context context) {
         Intent intent = new Intent(context, WeatherService.class);
         intent.setAction(ACTION_ALARM);
-        return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getService(context, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
     @Override
