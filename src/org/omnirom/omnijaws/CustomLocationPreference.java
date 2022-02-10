@@ -126,7 +126,7 @@ public class CustomLocationPreference extends EditTextPreference implements Weat
         Config.setLocationName(getContext(), result.city);
         setText(result.city);
         setSummary(result.city);
-        WeatherService.startUpdate(getContext());
+        WeatherUpdateService.scheduleUpdateNow(getContext());
     }
 
     public static class CustomLocationPreferenceDialogFragment extends EditTextPreferenceDialogFragment {

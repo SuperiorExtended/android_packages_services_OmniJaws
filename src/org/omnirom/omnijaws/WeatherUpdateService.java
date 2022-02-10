@@ -17,63 +17,54 @@
  */
 package org.omnirom.omnijaws;
 
-import java.util.Date;
-
 import android.Manifest;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.content.BroadcastReceiver;
+import android.app.job.JobInfo;
+import android.app.job.JobParameters;
+import android.app.job.JobScheduler;
+import android.app.job.JobService;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.IBinder;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
-public class WeatherService extends Service {
-    private static final String TAG = "WeatherService";
-    private static final boolean DEBUG = false;
-    private static final String ACTION_UPDATE = "org.omnirom.omnijaws.ACTION_UPDATE";
-    private static final String ACTION_ALARM = "org.omnirom.omnijaws.ACTION_ALARM";
-    private static final String ACTION_ENABLE = "org.omnirom.omnijaws.ACTION_ENABLE";
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+public class WeatherUpdateService extends JobService {
+    private static final String TAG = "WeatherUpdateService";
+    private static final boolean DEBUG = true;
     private static final String ACTION_BROADCAST = "org.omnirom.omnijaws.WEATHER_UPDATE";
     private static final String ACTION_ERROR = "org.omnirom.omnijaws.WEATHER_ERROR";
 
-    private static final String EXTRA_ENABLE = "enable";
     private static final String EXTRA_ERROR = "error";
 
-    private static final int EXTRA_ERROR_NETWORK = 0;
     private static final int EXTRA_ERROR_LOCATION = 1;
     private static final int EXTRA_ERROR_DISABLED = 2;
 
-    static final String ACTION_CANCEL_LOCATION_UPDATE =
-            "org.omnirom.omnijaws.CANCEL_LOCATION_UPDATE";
-
     private static final float LOCATION_ACCURACY_THRESHOLD_METERS = 50000;
-    public static final long LOCATION_REQUEST_TIMEOUT = 5L * 60L * 1000L; // request for at most 5 minutes
     private static final long OUTDATED_LOCATION_THRESHOLD_MILLIS = 10L * 60L * 1000L; // 10 minutes
-    private static final long ALARM_INTERVAL_BASE = AlarmManager.INTERVAL_HOUR;
     private static final int RETRY_DELAY_MS = 5000;
     private static final int RETRY_MAX_NUM = 5;
+
+    public static final int PERIODIC_UPDATE_JOB_ID = 0;
+    public static final int ONCE_UPDATE_JOB_ID = 1;
+    public static final int DELAYED_LOCATION_UPDATE_JOB_ID = 2;
 
     private HandlerThread mHandlerThread;
     private Handler mHandler;
     private PowerManager.WakeLock mWakeLock;
-    private boolean mRunning;
-    private static PendingIntent mAlarm;
 
     private static final Criteria sLocationCriteria;
+
     static {
         sLocationCriteria = new Criteria();
         sLocationCriteria.setPowerRequirement(Criteria.POWER_LOW);
@@ -81,25 +72,17 @@ public class WeatherService extends Service {
         sLocationCriteria.setCostAllowed(false);
     }
 
-    private BroadcastReceiver mScreenStateListener = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (DEBUG) Log.d(TAG, "screenStateListener:onReceive");
-            if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
-                if (Config.isEnabled(context) && Config.isUpdateError(context)) {
-                    Log.i(TAG, "screenStateListener trigger update after update error");
-                    WeatherService.startUpdate(context);
-                }
-            }
-        }
-    };
-
-    public WeatherService() {
+    @Override
+    public boolean onStopJob(JobParameters params) {
+        if (DEBUG) Log.d(TAG, "onStopJob " + params.getJobId());
+        return true;
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    public boolean onStartJob(JobParameters params) {
+        if (DEBUG) Log.d(TAG, "onStartJob " + params.getJobId());
+        updateWeatherFromAlarm(params);
+        return true;
     }
 
     @Override
@@ -112,109 +95,40 @@ public class WeatherService extends Service {
         PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         mWakeLock.setReferenceCounted(true);
-        registerScreenStateListener();
     }
 
-    public static void startUpdate(Context context) {
-        start(context, ACTION_UPDATE);
-    }
-
-    private static void start(Context context, String action) {
-        Intent i = new Intent(context, WeatherService.class);
-        i.setAction(action);
-        context.startService(i);
-    }
-
-    public static void stop(Context context) {
-        Intent i = new Intent(context, WeatherService.class);
-        i.setAction(ACTION_ENABLE);
-        i.putExtra(EXTRA_ENABLE, false);
-        context.startService(i);
-    }
-
-    private static PendingIntent alarmPending(Context context) {
-        Intent intent = new Intent(context, WeatherService.class);
-        intent.setAction(ACTION_ALARM);
-        return PendingIntent.getService(context, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    private void updateWeatherFromAlarm(JobParameters params) {
         Config.setUpdateError(this, false);
-        if (intent == null) {
-            Log.w(TAG, "intent == null");
-            stopSelf();
-            return START_NOT_STICKY;
-        }
-
-        if (mRunning) {
-            Log.w(TAG, "Service running ... do nothing");
-            return START_STICKY;
-        }
 
         mWakeLock.acquire();
         try {
-            if (ACTION_ENABLE.equals(intent.getAction())) {
-                boolean enable = intent.getBooleanExtra(EXTRA_ENABLE, false);
-                if (DEBUG) Log.d(TAG, "Set enablement " + enable);
-                Config.setEnabled(this, enable);
-                if (!enable) {
-                    cancelUpdate(this);
-                }
-            }
-
             if (!Config.isEnabled(this)) {
                 Log.w(TAG, "Service started, but not enabled ... stopping");
                 Intent errorIntent = new Intent(ACTION_ERROR);
                 errorIntent.putExtra(EXTRA_ERROR, EXTRA_ERROR_DISABLED);
                 sendBroadcast(errorIntent);
-                stopSelf();
-                return START_NOT_STICKY;
+                return;
             }
 
-            if (ACTION_CANCEL_LOCATION_UPDATE.equals(intent.getAction())) {
-                Log.w(TAG, "Service started, but location timeout ... stopping");
-                WeatherLocationListener.cancel(this);
-                Intent errorIntent = new Intent(ACTION_ERROR);
-                errorIntent.putExtra(EXTRA_ERROR, EXTRA_ERROR_LOCATION);
-                sendBroadcast(errorIntent);
-                Config.setUpdateError(this, true);
-                return START_STICKY;
+            // scheduled from location listener
+            if (params.getJobId() == DELAYED_LOCATION_UPDATE_JOB_ID) {
+                // still no location? - screw it
+                if (!isNeededLocationAvailable()) {
+                    WeatherLocationListener.cancel(this);
+                    Intent errorIntent = new Intent(ACTION_ERROR);
+                    errorIntent.putExtra(EXTRA_ERROR, EXTRA_ERROR_LOCATION);
+                    sendBroadcast(errorIntent);
+                    Config.setUpdateError(this, true);
+                }
             }
+            Config.clearLastUpdateTime(this);
 
-            if (!isNetworkAvailable()) {
-                if (DEBUG) Log.d(TAG, "Service started, but no network ... stopping");
-                Intent errorIntent = new Intent(ACTION_ERROR);
-                errorIntent.putExtra(EXTRA_ERROR, EXTRA_ERROR_NETWORK);
-                sendBroadcast(errorIntent);
-                Config.setUpdateError(this, true);
-                return START_STICKY;
-            }
-
-            if (ACTION_ALARM.equals(intent.getAction())) {
-                Config.setLastAlarmTime(this);
-            }
             if (DEBUG) Log.d(TAG, "updateWeather");
             updateWeather();
         } finally {
             mWakeLock.release();
+            jobFinished(params, false);
         }
-
-        return START_STICKY;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (DEBUG) Log.d(TAG, "onDestroy");
-        unregisterScreenStateListener();
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager cm = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info = cm.getActiveNetworkInfo();
-        return info != null && info.isConnected();
     }
 
     private boolean doCheckLocationEnabled() {
@@ -256,29 +170,67 @@ public class WeatherService extends Service {
         return location;
     }
 
-    public static void scheduleUpdate(Context context) {
-        cancelUpdate(context);
+    public static void scheduleUpdatePeriodic(Context context) {
+        cancelUpdatePeriodic(context);
 
-        final long interval = ALARM_INTERVAL_BASE * Config.getUpdateInterval(context);
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (DEBUG) Log.d(TAG, "scheduleUpdatePeriodic");
+        final long interval = TimeUnit.HOURS.toMillis(Config.getUpdateInterval(context));
         final long due = System.currentTimeMillis() + interval;
-        Config.setLastAlarmTime(context);
 
         if (DEBUG) Log.d(TAG, "Scheduling next update at " + new Date(due));
 
-        mAlarm = alarmPending(context);
-        am.setInexactRepeating(AlarmManager.RTC, due, interval, mAlarm);
-        startUpdate(context);
+        ComponentName component = new ComponentName(context, WeatherUpdateService.class);
+        JobInfo job = new JobInfo.Builder(PERIODIC_UPDATE_JOB_ID, component)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPeriodic(interval)
+                .build();
+        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(job);
     }
 
-    public static void cancelUpdate(Context context) {
-        if (mAlarm != null) {
-            AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            if (DEBUG) Log.d(TAG, "Cancel pending update");
+    public static void scheduleUpdateOnce(Context context, long timeoutMillis, int jobId) {
+        if (DEBUG) Log.d(TAG, "scheduleUpdateOnce");
 
-            am.cancel(mAlarm);
-            mAlarm = null;
-        }
+        ComponentName component = new ComponentName(context, WeatherUpdateService.class);
+        JobInfo job = new JobInfo.Builder(jobId, component)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setMinimumLatency(timeoutMillis)
+                .setOverrideDeadline(timeoutMillis)
+                .build();
+        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(job);
+    }
+
+    public static void scheduleUpdateNow(Context context) {
+        if (DEBUG) Log.d(TAG, "scheduleUpdateNow");
+
+        ComponentName component = new ComponentName(context, WeatherUpdateService.class);
+        JobInfo job = new JobInfo.Builder(ONCE_UPDATE_JOB_ID, component)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setMinimumLatency(1)
+                .setOverrideDeadline(1)
+                .build();
+        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(job);
+    }
+
+    private static void cancelUpdate(Context context, int jobId) {
+        if (DEBUG) Log.d(TAG, "cancelUpdate");
+        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.cancel(jobId);
+    }
+
+    public static void cancelDelayedLocationUpdate(Context context) {
+        cancelUpdate(context, DELAYED_LOCATION_UPDATE_JOB_ID);
+    }
+
+    public static void cancelUpdatePeriodic(Context context) {
+        cancelUpdate(context, PERIODIC_UPDATE_JOB_ID);
+    }
+
+    public static void cancelAllUpdate(Context context) {
+        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.cancelAll();
     }
 
     private void updateWeather() {
@@ -287,17 +239,16 @@ public class WeatherService extends Service {
             public void run() {
                 WeatherInfo w = null;
                 try {
-                    mRunning = true;
                     mWakeLock.acquire();
-                    AbstractWeatherProvider provider = Config.getProvider(WeatherService.this);
+                    AbstractWeatherProvider provider = Config.getProvider(WeatherUpdateService.this);
                     int i = 0;
                     // retry max 3 times
-                    while(i < RETRY_MAX_NUM) {
-                        if (!Config.isCustomLocation(WeatherService.this)) {
+                    while (i < RETRY_MAX_NUM) {
+                        if (!Config.isCustomLocation(WeatherUpdateService.this)) {
                             if (checkPermissions()) {
                                 Location location = getCurrentLocation();
                                 if (location != null) {
-                                    w = provider.getLocationWeather(location, Config.isMetric(WeatherService.this));
+                                    w = provider.getLocationWeather(location, Config.isMetric(WeatherUpdateService.this));
                                 } else {
                                     Log.w(TAG, "no location");
                                     // we are outa here
@@ -308,16 +259,16 @@ public class WeatherService extends Service {
                                 // we are outa here
                                 break;
                             }
-                        } else if (Config.getLocationId(WeatherService.this) != null){
-                            w = provider.getCustomWeather(Config.getLocationId(WeatherService.this), Config.isMetric(WeatherService.this));
+                        } else if (Config.getLocationId(WeatherUpdateService.this) != null) {
+                            w = provider.getCustomWeather(Config.getLocationId(WeatherUpdateService.this), Config.isMetric(WeatherUpdateService.this));
                         } else {
                             Log.w(TAG, "no valid custom location");
                             // we are outa here
                             break;
                         }
                         if (w != null) {
-                            Config.setWeatherData(WeatherService.this, w);
-                            WeatherContentProvider.updateCachedWeatherInfo(WeatherService.this);
+                            Config.setWeatherData(WeatherUpdateService.this, w);
+                            WeatherContentProvider.updateCachedWeatherInfo(WeatherUpdateService.this);
                             // we are outa here
                             break;
                         } else {
@@ -337,34 +288,31 @@ public class WeatherService extends Service {
                 } finally {
                     if (w == null) {
                         // error
-                        Config.setUpdateError(WeatherService.this, true);
+                        Config.setUpdateError(WeatherUpdateService.this, true);
                     }
                     // send broadcast that something has changed
                     Intent updateIntent = new Intent(ACTION_BROADCAST);
                     sendBroadcast(updateIntent);
                     mWakeLock.release();
-                    mRunning = false;
                 }
             }
-         });
+        });
     }
 
     private boolean checkPermissions() {
         return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
-    private void registerScreenStateListener() {
-        if (DEBUG) Log.d(TAG, "registerScreenStateListener");
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_SCREEN_ON);
-        this.registerReceiver(mScreenStateListener, filter);
-    }
-
-    private void unregisterScreenStateListener() {
-        if (DEBUG) Log.d(TAG, "unregisterScreenStateListener");
-        try {
-            this.unregisterReceiver(mScreenStateListener);
-        } catch (Exception e) {
+    private boolean isNeededLocationAvailable() {
+        if (!Config.isCustomLocation(WeatherUpdateService.this)) {
+            if (checkPermissions()) {
+                Location location = getCurrentLocation();
+                if (location == null) {
+                    Log.w(TAG, "no location");
+                    return false;
+                }
+            }
         }
+        return true;
     }
 }

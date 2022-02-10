@@ -24,7 +24,7 @@ import android.util.Log;
 
 public class SystemReceiver extends BroadcastReceiver {
     private static final String TAG = "WeatherService:SystemReceiver";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     @Override
     public void onReceive(final Context context, Intent intent) {
@@ -32,8 +32,8 @@ public class SystemReceiver extends BroadcastReceiver {
         if (Intent.ACTION_BOOT_COMPLETED.equals(action)) {
             if (Config.isEnabled(context)) {
                 if (DEBUG) Log.d(TAG, "boot completed kick alarm");
-                Config.clearLastUpdateTime(context);
-                WeatherService.scheduleUpdate(context);
+                WeatherUpdateService.scheduleUpdatePeriodic(context);
+                WeatherUpdateService.scheduleUpdateNow(context);
             }
         }
     }

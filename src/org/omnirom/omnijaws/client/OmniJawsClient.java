@@ -43,6 +43,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import org.omnirom.omnijaws.R;
+import org.omnirom.omnijaws.WeatherUpdateService;
 
 public class OmniJawsClient {
     private static final String TAG = "WeatherService:OmniJawsClient";
@@ -172,10 +173,7 @@ public class OmniJawsClient {
 
     public void updateWeather() {
         if (isOmniJawsServiceInstalled()) {
-            Intent updateIntent = new Intent(Intent.ACTION_MAIN)
-                    .setClassName(SERVICE_PACKAGE, SERVICE_PACKAGE + ".WeatherService");
-            updateIntent.setAction(SERVICE_PACKAGE + ".ACTION_UPDATE");
-            mContext.startService(updateIntent);
+            WeatherUpdateService.scheduleUpdateNow(mContext);
         }
     }
 
@@ -379,18 +377,6 @@ public class OmniJawsClient {
             }
         }
         return true;
-    }
-
-    public void setOmniJawsEnabled(boolean value) {
-        if (isOmniJawsServiceInstalled()) {
-            // check first time enablement and redirect to settings
-            // cause we need to enable gps for it
-            Intent updateIntent = new Intent(Intent.ACTION_MAIN)
-                    .setClassName(SERVICE_PACKAGE, SERVICE_PACKAGE + ".WeatherService");
-            updateIntent.setAction(SERVICE_PACKAGE + ".ACTION_ENABLE");
-            updateIntent.putExtra("enable", value);
-            mContext.startService(updateIntent);
-        }
     }
 
     public boolean isOmniJawsSetupDone() {

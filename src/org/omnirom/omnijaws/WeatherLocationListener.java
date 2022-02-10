@@ -17,8 +17,6 @@
  */
 package org.omnirom.omnijaws;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -26,15 +24,14 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 
 class WeatherLocationListener implements LocationListener {
     private static final String TAG = "WeatherService:WeatherLocationListener";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private Context mContext;
-    private PendingIntent mTimeoutIntent;
     private static WeatherLocationListener sInstance = null;
+    public static final long LOCATION_REQUEST_TIMEOUT = 5L * 60L * 1000L; // request for at most 5 minutes
 
     static void registerIfNeeded(Context context, String provider) {
         synchronized (WeatherLocationListener.class) {
@@ -82,24 +79,11 @@ class WeatherLocationListener implements LocationListener {
     }
 
     private void setTimeoutAlarm() {
-        Intent intent = new Intent(mContext, WeatherService.class);
-        intent.setAction(WeatherService.ACTION_CANCEL_LOCATION_UPDATE);
-
-        mTimeoutIntent = PendingIntent.getService(mContext, 0, intent,
-                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_CANCEL_CURRENT |
-                PendingIntent.FLAG_IMMUTABLE);
-
-        AlarmManager am = (AlarmManager) mContext.getSystemService(WeatherService.ALARM_SERVICE);
-        long elapseTime = SystemClock.elapsedRealtime() + WeatherService.LOCATION_REQUEST_TIMEOUT;
-        am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, elapseTime, mTimeoutIntent);
+        WeatherUpdateService.scheduleUpdateOnce(mContext, LOCATION_REQUEST_TIMEOUT, WeatherUpdateService.DELAYED_LOCATION_UPDATE_JOB_ID);
     }
 
     private void cancelTimeoutAlarm() {
-        if (mTimeoutIntent != null) {
-            AlarmManager am = (AlarmManager) mContext.getSystemService(WeatherService.ALARM_SERVICE);
-            am.cancel(mTimeoutIntent);
-            mTimeoutIntent = null;
-        }
+        WeatherUpdateService.cancelDelayedLocationUpdate(mContext);
     }
 
     @Override
@@ -107,7 +91,7 @@ class WeatherLocationListener implements LocationListener {
         // Now, we have a location to use. Schedule a weather update right now.
         Log.d(TAG, "The location has changed, schedule an update ");
         synchronized (WeatherLocationListener.class) {
-            WeatherService.startUpdate(mContext);
+            WeatherUpdateService.scheduleUpdateNow(mContext);
             cancelTimeoutAlarm();
             sInstance = null;
         }
@@ -119,7 +103,7 @@ class WeatherLocationListener implements LocationListener {
         Log.d(TAG, "The location service has become available, schedule an update ");
         if (status == LocationProvider.AVAILABLE) {
             synchronized (WeatherLocationListener.class) {
-                WeatherService.startUpdate(mContext);
+                WeatherUpdateService.scheduleUpdateNow(mContext);
                 cancelTimeoutAlarm();
                 sInstance = null;
             }

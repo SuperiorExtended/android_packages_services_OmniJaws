@@ -20,22 +20,15 @@ package org.omnirom.omnijaws;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.location.LocationManager;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.CheckBoxPreference;
@@ -170,7 +163,7 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
         getPreferenceScreen().removeAll();
         doLoadPreferences();
         if (mTriggerPermissionCheck) {
-            checkLocationPermissions();
+            checkLocationPermissions(true);
             mTriggerPermissionCheck = false;
         }
         queryAndUpdateWeather();
@@ -249,8 +242,9 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
             boolean value = (Boolean) newValue;
             Config.setEnabled(getContext(), value);
             if (value) {
+                enableService();
                 if (!mCustomLocation.isChecked()) {
-                    checkLocationEnabled();
+                    checkLocationEnabledInitial();
                 } else {
                     forceRefreshWeatherSettings();
                 }
@@ -284,12 +278,15 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
         dialog.show();
     }
 
-    private void checkLocationPermissions() {
+    private void checkLocationPermissions(boolean force) {
         if (getContext().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         } else {
+            if (force) {
+                forceRefreshWeatherSettings();
+            }
             queryAndUpdateWeather();
         }
     }
@@ -303,7 +300,15 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
         if (!doCheckLocationEnabled()) {
             showDialog();
         } else {
-            checkLocationPermissions();
+            checkLocationPermissions(false);
+        }
+    }
+
+    private void checkLocationEnabledInitial() {
+        if (!doCheckLocationEnabled()) {
+            showDialog();
+        } else {
+            checkLocationPermissions(true);
         }
     }
 
@@ -323,8 +328,11 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 
     private void disableService() {
         // stop any pending
-        WeatherService.cancelUpdate(getContext());
-        WeatherService.stop(getContext());
+        WeatherUpdateService.cancelAllUpdate(getContext());
+    }
+
+    private void enableService() {
+        WeatherUpdateService.scheduleUpdatePeriodic(getContext());
     }
 
     @Override
@@ -415,7 +423,7 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
     }
 
     private void forceRefreshWeatherSettings() {
-        mWeatherClient.updateWeather();
+        WeatherUpdateService.scheduleUpdateNow(getContext());
     }
 
     @Override

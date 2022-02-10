@@ -34,7 +34,6 @@ public class Config {
     public static final String PREF_KEY_ENABLE = "enable";
     public static final String PREF_KEY_UPDATE_INTERVAL = "update_interval";
     public static final String PREF_KEY_ICON_PACK = "icon_pack";
-    public static final String PREF_KEY_LAST_ALARM = "last_alarm";
     public static final String PREF_KEY_UPDATE_ERROR = "update_error";
     public static final String PREF_KEY_OWM_KEY = "owm_key";
     public static final String PREF_KEY_HISTORY = "history";
@@ -153,7 +152,6 @@ public class Config {
                 .getDefaultSharedPreferences(context);
 
         prefs.edit().putLong(PREF_KEY_LAST_UPDATE, 0).commit();
-        prefs.edit().putLong(PREF_KEY_LAST_ALARM, 0).commit();
     }
 
     public static boolean isEnabled(Context context) {
@@ -190,20 +188,6 @@ public class Config {
                 .getDefaultSharedPreferences(context);
 
         prefs.edit().putString(PREF_KEY_ICON_PACK, value).commit();
-    }
-
-    public static long getLastAlarmTime(Context context) {
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(context);
-
-        return prefs.getLong(PREF_KEY_LAST_ALARM, 0);
-    }
-
-    public static void setLastAlarmTime(Context context) {
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(context);
-
-        prefs.edit().putLong(PREF_KEY_LAST_ALARM, System.currentTimeMillis()).commit();
     }
 
     public static boolean isUpdateError(Context context) {
