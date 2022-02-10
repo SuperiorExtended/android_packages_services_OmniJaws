@@ -1,0 +1,26 @@
+android_app {
+  name: "OmniJaws",
+  manifest: "app/src/main/AndroidManifest.xml",
+  sdk_version: "system_current",
+
+  libs: [
+    "org.apache.http.legacy",
+  ],
+
+  srcs: [
+    "app/src/main/**/*.java",
+  ],
+
+  resource_dirs: [
+    "app/src/main/res/",
+  ],
+
+  static_libs: [
+    "androidx.core_core",
+    "androidx.preference_preference",
+  ],
+  
+  optimize: {
+    enabled: false,
+  },
+}

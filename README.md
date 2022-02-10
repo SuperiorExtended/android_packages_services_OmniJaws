@@ -1,22 +1,39 @@
 About
 -----
 OmniJaws "Just another weather service"
-is a minimized service to fetch weather data from OpenWeatherMap or MET Norway.
-
-MET Norway Weather API
-https://api.met.no/
+is a minimized service to fetch weather data from OpenWeatherMap or Yahoo.
 
 OpenWeatherMap API
 http://openweathermap.org/current
 
-
 IMPORTANT: please request your own API key from OpenWeatherMap at
 https://openweathermap.org/appid#get
+and enter it here
+https://github.com/omnirom/android_packages_services_OmniJaws/blob/android-8.1/res/values/config.xml
+
+Yahoo weather API
+https://developer.yahoo.com/weather/
+
+Thanks to the original creators and contributors of the LockClock app
+https://github.com/CyanogenMod/android_packages_apps_LockClock
+
+It provided a lot of insights and knowledge how to do this
+Some parts of the code like the provider access have been taken
+from it with minor modificatioons. Please check the file copyright
+headers for the origins of the files.
+
+If you already include LockClock with your ROM you should
+consider if you really need this. The provider API is similiar
+and you dont need two different providers.
+
+The default condition icon pack has also been extracted from
+LockClock
 
 Client access
 -----
 Here is a client code example using the content provider
-to access weather data src/org/omnirom/omnijaws/client/OmniJawsClient.java
+to access weather data
+https://github.com/omnirom/android_packages_services_OmniJaws/blob/android-8.1/src/org/omnirom/omnijaws/client/OmniJawsClient.java
 
 Broadcasts and content observers
 -----

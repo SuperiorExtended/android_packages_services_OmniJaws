@@ -30,25 +30,23 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 
-import androidx.fragment.app.DialogFragment;
-import androidx.preference.CheckBoxPreference;
-import androidx.preference.EditTextPreference;
-import androidx.preference.SwitchPreference;
-import androidx.preference.ListPreference;
-import androidx.preference.Preference;
-import androidx.preference.Preference.OnPreferenceChangeListener;
-import androidx.preference.PreferenceFragment;
-import androidx.preference.PreferenceCategory;
-import androidx.preference.PreferenceManager;
-import androidx.preference.PreferenceScreen;
-
 import org.omnirom.omnijaws.client.OmniJawsClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.preference.CheckBoxPreference;
+import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.Preference.OnPreferenceChangeListener;
+import androidx.preference.PreferenceFragment;
+import androidx.preference.PreferenceManager;
+import androidx.preference.PreferenceScreen;
+import androidx.preference.SwitchPreference;
+
 public class SettingsFragment extends PreferenceFragment implements OnPreferenceChangeListener,
-        WeatherLocationTask.Callback, OmniJawsClient.OmniJawsObserver  {
+        WeatherLocationTask.Callback, OmniJawsClient.OmniJawsObserver {
 
     private static final String CHRONUS_ICON_PACK_INTENT = "com.dvtonder.chronus.ICON_PACK";
     private static final String DEFAULT_WEATHER_ICON_PACKAGE = "org.omnirom.omnijaws";
@@ -206,7 +204,7 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
             mProvider.setValueIndex(idx);
             if (mCustomLocation.isChecked() && Config.getLocationName(getContext()) != null) {
                 // city ids are provider specific - so we need to recheck
-                new WeatherLocationTask(getContext(), Config.getLocationName(getContext()),this).execute();
+                new WeatherLocationTask(getContext(), Config.getLocationName(getContext()), this).execute();
             } else {
                 forceRefreshWeatherSettings();
             }
@@ -280,8 +278,9 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 
     private void checkLocationPermissions(boolean force) {
         if (getContext().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED || getContext().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         } else {
             if (force) {
@@ -388,9 +387,9 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
         String errorString = null;
         if (errorReason == OmniJawsClient.EXTRA_ERROR_DISABLED) {
             errorString = getResources().getString(R.string.omnijaws_service_disabled);
-        } else if (errorReason == OmniJawsClient.EXTRA_ERROR_LOCATION){
+        } else if (errorReason == OmniJawsClient.EXTRA_ERROR_LOCATION) {
             errorString = getResources().getString(R.string.omnijaws_service_error_location);
-        } else if (errorReason == OmniJawsClient.EXTRA_ERROR_NETWORK){
+        } else if (errorReason == OmniJawsClient.EXTRA_ERROR_NETWORK) {
             errorString = getResources().getString(R.string.omnijaws_service_error_network);
         } else {
             errorString = getResources().getString(R.string.omnijaws_service_error_long);
