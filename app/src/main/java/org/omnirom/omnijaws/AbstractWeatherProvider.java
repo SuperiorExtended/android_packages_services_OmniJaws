@@ -33,7 +33,7 @@ import android.util.Log;
 
 public abstract class AbstractWeatherProvider {
     private static final String TAG = "AbstractWeatherProvider";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     protected Context mContext;
 
     public AbstractWeatherProvider(Context context) {

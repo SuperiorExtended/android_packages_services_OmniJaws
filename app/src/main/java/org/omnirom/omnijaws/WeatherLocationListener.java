@@ -28,7 +28,6 @@ import android.util.Log;
 
 class WeatherLocationListener implements LocationListener {
     private static final String TAG = "WeatherService:WeatherLocationListener";
-    private static final boolean DEBUG = true;
     private Context mContext;
     private static WeatherLocationListener sInstance = null;
     public static final long LOCATION_REQUEST_TIMEOUT = 5L * 60L * 1000L; // request for at most 5 minutes

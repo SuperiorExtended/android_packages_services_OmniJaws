@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2017 The OmniROM Project
+* Copyright (C) 2021 The OmniROM Project
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -42,11 +42,8 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.omnirom.omnijaws.R;
-import org.omnirom.omnijaws.WeatherUpdateService;
-
 public class OmniJawsClient {
-    private static final String TAG = "WeatherService:OmniJawsClient";
+    private static final String TAG = "OmniJawsClient";
     private static final boolean DEBUG = false;
     public static final String SERVICE_PACKAGE = "org.omnirom.omnijaws";
     public static final Uri WEATHER_URI
@@ -86,8 +83,8 @@ public class OmniJawsClient {
             "icon_pack"
     };
 
-    private static final String WEATHER_UPDATE = "org.omnirom.omnijaws.WEATHER_UPDATE";
-    private static final String WEATHER_ERROR = "org.omnirom.omnijaws.WEATHER_ERROR";
+    private static final String WEATHER_UPDATE = SERVICE_PACKAGE + ".WEATHER_UPDATE";
+    private static final String WEATHER_ERROR = SERVICE_PACKAGE + ".WEATHER_ERROR";
 
     private static final DecimalFormat sNoDigitsFormat = new DecimalFormat("0");
 
@@ -166,21 +163,19 @@ public class OmniJawsClient {
         mObserver = new ArrayList<OmniJawsObserver>();
     }
 
-    public OmniJawsClient(Context context, boolean settingsObserver) {
-        mContext = context;
-        mObserver = new ArrayList<OmniJawsObserver>();
-    }
-
-    public void updateWeather() {
-        if (isOmniJawsServiceInstalled()) {
-            WeatherUpdateService.scheduleUpdateNow(mContext);
-        }
-    }
-
     public Intent getSettingsIntent() {
         if (isOmniJawsServiceInstalled()) {
             Intent settings = new Intent(Intent.ACTION_MAIN)
-                    .setClassName("org.omnirom.omnijaws", "org.omnirom.omnijaws.SettingsActivity");
+                    .setClassName(SERVICE_PACKAGE, SERVICE_PACKAGE + ".SettingsActivity");
+            return settings;
+        }
+        return null;
+    }
+
+    public Intent getWeatherActivityIntent() {
+        if (isOmniJawsServiceInstalled()) {
+            Intent settings = new Intent(Intent.ACTION_MAIN)
+                    .setClassName(SERVICE_PACKAGE, SERVICE_PACKAGE + ".WeatherActivity");
             return settings;
         }
         return null;
@@ -311,10 +306,11 @@ public class OmniJawsClient {
     }
 
     private void loadCustomIconPackage() {
+        if (DEBUG) Log.d(TAG, "Load custom icon pack " + mSettingIconPackage);
         int idx = mSettingIconPackage.lastIndexOf(".");
         mPackageName = mSettingIconPackage.substring(0, idx);
         mIconPrefix = mSettingIconPackage.substring(idx + 1);
-        if (DEBUG) Log.d(TAG, "Load custom icon pack " + mSettingIconPackage + " " + mPackageName + " " + mIconPrefix);
+        if (DEBUG) Log.d(TAG, "Load custom icon pack " + mPackageName + " " + mIconPrefix);
         try {
             PackageManager packageManager = mContext.getPackageManager();
             mRes = packageManager.getResourcesForApplication(mPackageName);
@@ -330,7 +326,7 @@ public class OmniJawsClient {
     public Drawable getWeatherConditionImage(int conditionCode) {
         if (!isOmniJawsEnabled()) {
             Log.w(TAG, "Requesting condition image while disabled");
-            return null;
+            return getDefaultConditionImage();
         }
         if (!isAvailableApp(mPackageName)) {
             Log.w(TAG, "Icon pack no longer available - loading default " + mPackageName);
@@ -338,7 +334,7 @@ public class OmniJawsClient {
         }
         if (mRes == null) {
             Log.w(TAG, "Requesting condition image while disabled");
-            return null;
+            return getDefaultConditionImage();
         }
         try {
             int resId = mRes.getIdentifier(mIconPrefix + "_" + conditionCode, "drawable", mPackageName);
@@ -353,6 +349,7 @@ public class OmniJawsClient {
                 return d;
             }
         } catch(Exception e) {
+            Log.e(TAG, "getWeatherConditionImage", e);
         }
         Log.w(TAG, "Failed to get condition image for " + conditionCode);
         return getDefaultConditionImage();
@@ -366,34 +363,42 @@ public class OmniJawsClient {
         if (!isOmniJawsServiceInstalled()) {
             return false;
         }
-        final Cursor c = mContext.getContentResolver().query(SETTINGS_URI, SETTINGS_PROJECTION,
-                null, null, null);
-        if (c != null) {
-            int count = c.getCount();
-            if (count == 1) {
-                c.moveToPosition(0);
-                boolean enabled = c.getInt(0) == 1;
-                return enabled;
+        try {
+            final Cursor c = mContext.getContentResolver().query(SETTINGS_URI, SETTINGS_PROJECTION,
+                    null, null, null);
+            if (c != null) {
+                int count = c.getCount();
+                if (count == 1) {
+                    c.moveToPosition(0);
+                    boolean enabled = c.getInt(0) == 1;
+                    return enabled;
+                }
             }
+        } catch (Exception e) {
+            Log.e(TAG, "isOmniJawsEnabled", e);
         }
-        return true;
+        return false;
     }
 
     public boolean isOmniJawsSetupDone() {
         if (!isOmniJawsServiceInstalled()) {
             return false;
         }
-        final Cursor c = mContext.getContentResolver().query(SETTINGS_URI, SETTINGS_PROJECTION,
-                null, null, null);
-        if (c != null) {
-            int count = c.getCount();
-            if (count == 1) {
-                c.moveToPosition(0);
-                boolean setupDone = c.getInt(3) == 1;
-                return setupDone;
+        try {
+            final Cursor c = mContext.getContentResolver().query(SETTINGS_URI, SETTINGS_PROJECTION,
+                    null, null, null);
+            if (c != null) {
+                int count = c.getCount();
+                if (count == 1) {
+                    c.moveToPosition(0);
+                    boolean setupDone = c.getInt(3) == 1;
+                    return setupDone;
+                }
             }
+        } catch (Exception e) {
+            Log.e(TAG, "isOmniJawsSetupDone", e);
         }
-        return true;
+        return false;
     }
 
     private String getTemperatureUnit() {
@@ -402,6 +407,16 @@ public class OmniJawsClient {
 
     private String getWindUnit() {
         return mMetric ? "km/h":"mph";
+    }
+
+    private void updateSettings() {
+        final String iconPack = mCachedInfo != null ? mCachedInfo.iconPack : null;
+        if (TextUtils.isEmpty(iconPack)) {
+            loadDefaultIconsPackage();
+        } else if (mSettingIconPackage == null || !iconPack.equals(mSettingIconPackage)) {
+            mSettingIconPackage = iconPack;
+            loadCustomIconPackage();
+        }
     }
 
     private boolean isAvailableApp(String packageName) {
@@ -413,16 +428,6 @@ public class OmniJawsClient {
                     enabled != PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER;
         } catch (NameNotFoundException e) {
             return false;
-        }
-    }
-
-    private void updateSettings() {
-        final String iconPack = mCachedInfo != null ? mCachedInfo.iconPack : null;
-        if (TextUtils.isEmpty(iconPack)) {
-            loadDefaultIconsPackage();
-        } else if (mSettingIconPackage == null || !iconPack.equals(mSettingIconPackage)) {
-            mSettingIconPackage = iconPack;
-            loadCustomIconPackage();
         }
     }
 
@@ -438,7 +443,7 @@ public class OmniJawsClient {
             IntentFilter filter = new IntentFilter();
             filter.addAction(WEATHER_UPDATE);
             filter.addAction(WEATHER_ERROR);
-            if (DEBUG) Log.d(TAG, "addObserver " + this + " " + mReceiver);
+            if (DEBUG) Log.d(TAG, "registerReceiver");
             mContext.registerReceiver(mReceiver, filter);
         }
         mObserver.add(observer);
@@ -448,7 +453,7 @@ public class OmniJawsClient {
         mObserver.remove(observer);
         if (mObserver.size() == 0 && mReceiver != null) {
             try {
-                if (DEBUG) Log.d(TAG, "removeObserver " + this + " " + mReceiver);
+                if (DEBUG) Log.d(TAG, "unregisterReceiver");
                 mContext.unregisterReceiver(mReceiver);
             } catch (Exception e) {
             }

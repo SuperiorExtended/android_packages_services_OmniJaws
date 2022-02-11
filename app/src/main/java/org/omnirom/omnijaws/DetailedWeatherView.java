@@ -272,10 +272,6 @@ public class DetailedWeatherView extends FrameLayout {
         return Color.WHITE;
     }
 
-    private void forceRefreshWeatherSettings() {
-        mWeatherClient.updateWeather();
-    }
-
     private void setErrorView() {
         mEmptyView.setVisibility(View.VISIBLE);
         mWeatherLine.setVisibility(View.GONE);
@@ -311,9 +307,9 @@ public class DetailedWeatherView extends FrameLayout {
         mProgressContainer.setVisibility(View.GONE);
     }
 
-    public void refresh() {
+    public void forceRefresh() {
         if (mWeatherClient.isOmniJawsEnabled()) {
             startProgress();
-            forceRefreshWeatherSettings();
+            WeatherUpdateService.scheduleUpdateNow(getContext());
     }}
 }

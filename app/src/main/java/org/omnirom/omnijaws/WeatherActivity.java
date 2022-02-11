@@ -19,11 +19,8 @@ package org.omnirom.omnijaws;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import org.omnirom.omnijaws.client.OmniJawsClient;
@@ -57,7 +54,7 @@ public class WeatherActivity extends Activity implements OmniJawsClient.OmniJaws
         });
         View refresh = findViewById(R.id.refresh);
         refresh.setOnClickListener(v -> {
-            mDetailedView.refresh();
+            mDetailedView.forceRefresh();
         });
         mWeatherClient = new OmniJawsClient(this);
         mDetailedView.setActivity(this);

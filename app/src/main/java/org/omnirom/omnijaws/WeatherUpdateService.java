@@ -36,12 +36,14 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.omnirom.omnijaws.widget.WeatherAppWidgetProvider;
+
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class WeatherUpdateService extends JobService {
     private static final String TAG = "WeatherUpdateService";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final String ACTION_BROADCAST = "org.omnirom.omnijaws.WEATHER_UPDATE";
     private static final String ACTION_ERROR = "org.omnirom.omnijaws.WEATHER_ERROR";
 
@@ -269,6 +271,7 @@ public class WeatherUpdateService extends JobService {
                         if (w != null) {
                             Config.setWeatherData(WeatherUpdateService.this, w);
                             WeatherContentProvider.updateCachedWeatherInfo(WeatherUpdateService.this);
+                            WeatherAppWidgetProvider.updateAllWidgets(WeatherUpdateService.this);
                             // we are outa here
                             break;
                         } else {
@@ -300,7 +303,8 @@ public class WeatherUpdateService extends JobService {
     }
 
     private boolean checkPermissions() {
-        return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
     private boolean isNeededLocationAvailable() {

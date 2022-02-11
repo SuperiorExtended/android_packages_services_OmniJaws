@@ -44,68 +44,34 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:textAppearance="@style/Weather"
                 android:layout_weight="2"
-                android:visibility="invisible" />
+                android:ellipsize="end"
+                android:paddingStart="10dp"
+                android:singleLine="true"
+                android:textAppearance="@style/Weather" />
 
             <TextView
                 android:id="@+id/current_weather_data"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_weight="4"
+                android:ellipsize="end"
                 android:gravity="center_horizontal"
                 android:singleLine="true"
-                android:ellipsize="end"
-                android:textAppearance="@style/Weather"
-                android:layout_weight="3"
-                android:visibility="gone" />
+                android:textAppearance="@style/Weather" />
 
             <TextView
-                android:id="@+id/no_weather_notice"
+                android:id="@+id/current_weather_timestamp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:gravity="center_horizontal"
-                android:singleLine="true"
-                android:text="@string/omnijaws_service_init"
-                android:textAppearance="@style/Weather"
-                android:layout_weight="3" />
-
-            <LinearLayout
-                android:id="@+id/timestamp_container"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:orientation="horizontal"
-                android:visibility="invisible" >
+                android:gravity="end"
+                android:paddingEnd="10dp"
+                android:singleLine="true"
+                android:textAppearance="@style/Weather" />
 
-                <TextView
-                    android:id="@+id/error_marker"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="end"
-                    android:textAppearance="@style/Weather"
-                    android:layout_weight="1"
-                    android:visibility="invisible" />
-
-                <TextView
-                    android:id="@+id/current_weather_timestamp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:singleLine="true"
-                    android:textAppearance="@style/Weather"/>
-
-                <ImageView
-                    android:id="@+id/refresh"
-                    android:layout_width="@dimen/weather_refresh_icon_size"
-                    android:layout_height="@dimen/weather_refresh_icon_size"
-                    android:layout_gravity="center_vertical"
-                    android:scaleType="centerInside" />
-            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -273,19 +239,21 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/progress_container"
+            android:id="@+id/info_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:orientation="horizontal"
-            android:visibility="gone">
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <ProgressBar
-                style="?android:attr/progressBarStyleSmall"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/info_text"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:indeterminateTint="@android:color/white"
-                android:indeterminateTintMode="src_in" />
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textAppearance="@style/Weather" />
+
         </LinearLayout>
 
         <LinearLayout
