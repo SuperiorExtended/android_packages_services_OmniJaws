@@ -16,7 +16,10 @@
 
 package org.omnirom.omnijaws;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +33,8 @@ import org.omnirom.omnijaws.WeatherInfo.DayForecast;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -39,19 +44,17 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
     private static final String TAG = "OpenWeatherMapProvider";
 
     private static final int FORECAST_DAYS = 5;
-    private static final String SELECTION_LOCATION = "lat=%f&lon=%f";
-    private static final String SELECTION_ID = "id=%s";
-
-    private static final String URL_LOCATION =
-            "http://api.openweathermap.org/data/2.5/find?q=%s&mode=json&lang=%s&appid=%s";
+    private static final String PART_COORDINATES =
+            "lat=%f&lon=%f";
     private static final String URL_WEATHER =
-            "http://api.openweathermap.org/data/2.5/weather?%s&mode=json&units=%s&lang=%s&appid=%s";
-    private static final String URL_FORECAST =
-            "http://api.openweathermap.org/data/2.5/forecast?%s&mode=json&units=%s&lang=%s&cnt=" + FORECAST_DAYS + "&appid=%s";
+            "http://api.openweathermap.org/data/2.5/onecall?%s&mode=json&units=%s&lang=%s&cnt=" + FORECAST_DAYS + "&appid=%s";
+    private static final String URL_PLACES =
+            "http://api.geonames.org/searchJSON?q=%s&lang=%s&username=omnijaws&isNameRequired=true";
 
     private List<String> mKeys = new ArrayList<String>();
     private boolean mHasAPIKey;
     private int mRequestNumber;
+    private static final SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     public OpenWeatherMapProvider(Context context) {
         super(context);
@@ -60,30 +63,29 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
     }
 
     public List<WeatherInfo.WeatherLocation> getLocations(String input) {
-        if (!mHasAPIKey) {
-            return null;
-        }
-        mRequestNumber++;
-        String url = String.format(URL_LOCATION, Uri.encode(input), getLanguageCode(), getAPIKey());
+        String lang = Locale.getDefault().getLanguage().replaceFirst("_", "-");
+        String url = String.format(URL_PLACES, Uri.encode(input), lang);
         String response = retrieve(url);
         if (response == null) {
             return null;
         }
-
         log(TAG, "URL = " + url + " returning a response of " + response);
 
         try {
-            JSONArray jsonResults = new JSONObject(response).getJSONArray("list");
-            ArrayList<WeatherInfo.WeatherLocation> results = new ArrayList<WeatherInfo.WeatherLocation>();
+            JSONArray jsonResults = new JSONObject(response).getJSONArray("geonames");
+            ArrayList<WeatherInfo.WeatherLocation> results = new ArrayList<>(jsonResults.length());
             int count = jsonResults.length();
 
             for (int i = 0; i < count; i++) {
                 JSONObject result = jsonResults.getJSONObject(i);
                 WeatherInfo.WeatherLocation location = new WeatherInfo.WeatherLocation();
 
-                location.id = result.getString("id");
-                location.city = result.getString("name");
-                location.countryId = result.getJSONObject("sys").getString("country");
+                String city = result.getString("name");
+                String area = result.getString("adminName1");
+
+                location.id = String.format(Locale.US, PART_COORDINATES, result.getDouble("lat"), result.getDouble("lng"));
+                location.city = city;
+                location.countryId = city.equals(area) ? result.getString("countryName") : result.getString("countryName") + ", " + area;
                 results.add(location);
             }
 
@@ -96,14 +98,12 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
     }
 
     public WeatherInfo getCustomWeather(String id, boolean metric) {
-        String selection = String.format(Locale.US, SELECTION_ID, id);
-        return handleWeatherRequest(selection, metric);
+        return handleWeatherRequest(id, metric);
     }
 
     public WeatherInfo getLocationWeather(Location location, boolean metric) {
-        String selection = String.format(Locale.US, SELECTION_LOCATION,
-                location.getLatitude(), location.getLongitude());
-        return handleWeatherRequest(selection, metric);
+        String coordinates = String.format(Locale.US, PART_COORDINATES, location.getLatitude(), location.getLongitude());
+        return handleWeatherRequest(coordinates, metric);
     }
 
     private WeatherInfo handleWeatherRequest(String selection, boolean metric) {
@@ -120,35 +120,31 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
         }
         log(TAG, "Condition URL = " + conditionUrl + " returning a response of " + conditionResponse);
 
-        mRequestNumber++;
-        String forecastUrl = String.format(Locale.US, URL_FORECAST, selection, units, locale, getAPIKey());
-        String forecastResponse = retrieve(forecastUrl);
-        if (forecastResponse == null) {
-            return null;
-        }
-        log(TAG, "Forcast URL = " + forecastUrl + " returning a response of " + forecastResponse);
-
         try {
             JSONObject conditions = new JSONObject(conditionResponse);
-            JSONObject weather = conditions.getJSONArray("weather").getJSONObject(0);
-            JSONObject conditionData = conditions.getJSONObject("main");
-            JSONObject windData = conditions.getJSONObject("wind");
+            JSONObject conditionData = conditions.getJSONObject("current");
+            JSONObject weather = conditionData.getJSONArray("weather").getJSONObject(0);
             ArrayList<DayForecast> forecasts =
-                    parseForecasts(new JSONObject(forecastResponse).getJSONArray("list"), metric);
-            String localizedCityName = conditions.getString("name");
-            float windSpeed = (float) windData.getDouble("speed");
+                    parseForecasts(conditions.getJSONArray("daily"), metric);
+            float windSpeed = (float) conditionData.getDouble("wind_speed");
             if (metric) {
                 // speeds are in m/s so convert to our common metric unit km/h
                 windSpeed *= 3.6f;
             }
-            WeatherInfo w = new WeatherInfo(mContext, conditions.getString("id"), localizedCityName,
+
+            String localizedCityName = getNameLocality(selection);
+            if (TextUtils.isEmpty(localizedCityName)) {
+                localizedCityName = mContext.getResources().getString(R.string.omnijaws_city_unkown);
+            }
+
+            WeatherInfo w = new WeatherInfo(mContext, selection, localizedCityName,
                     /* condition */ weather.getString("main"),
                     /* conditionCode */ mapConditionIconToCode(
                             weather.getString("icon"), weather.getInt("id")),
                     /* temperature */ sanitizeTemperature(conditionData.getDouble("temp"), metric),
                     /* humidity */ (float) conditionData.getDouble("humidity"),
                     /* wind */ windSpeed,
-                    /* windDir */ windData.has("deg") ? windData.getInt("deg") : 0,
+                    /* windDir */ conditionData.has("WIND_deg") ? conditionData.getInt("wind_deg") : 0,
                     metric,
                     forecasts,
                     System.currentTimeMillis());
@@ -171,18 +167,19 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
             throw new JSONException("Empty forecasts array");
         }
         for (int i = 0; i < count; i++) {
+            String day = getDay(i);
             DayForecast item = null;
             try {
                 JSONObject forecast = forecasts.getJSONObject(i);
-                JSONObject conditionData = forecast.getJSONObject("main");
+                JSONObject conditionData = forecast.getJSONObject("temp");
                 JSONObject data = forecast.getJSONArray("weather").getJSONObject(0);
                 item = new DayForecast(
-                        /* low */ sanitizeTemperature(conditionData.getDouble("temp_min"), metric),
-                        /* high */ sanitizeTemperature(conditionData.getDouble("temp_max"), metric),
+                        /* low */ sanitizeTemperature(conditionData.getDouble("min"), metric),
+                        /* high */ sanitizeTemperature(conditionData.getDouble("max"), metric),
                         /* condition */ data.getString("main"),
                         /* conditionCode */ mapConditionIconToCode(
                                 data.getString("icon"), data.getInt("id")),
-                        "NaN",
+                        day,
                         metric);
             } catch (JSONException e) {
                 Log.w(TAG, "Invalid forecast for day " + i + " creating dummy", e);
@@ -372,6 +369,7 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
             }
         } catch (Resources.NotFoundException e) {
         }
+        log(TAG, "use API keys = " + mKeys);
     }
 
     private String getAPIKey() {
@@ -393,5 +391,29 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
 
     public boolean shouldRetry() {
         return false;
+    }
+
+    private String getDay(int i) {
+        Calendar calendar = Calendar.getInstance();
+        if(i > 0) {
+            calendar.add(Calendar.DATE, i);
+        }
+        return dayFormat.format(calendar.getTime());
+    }
+
+    private String getNameLocality(String coordinate) {
+        double latitude = Double.valueOf(coordinate.substring(4, coordinate.indexOf("&")));
+        double longitude = Double.valueOf(coordinate.substring(coordinate.indexOf("lon=") + 4));
+        Geocoder geocoder = new Geocoder(mContext.getApplicationContext(), Locale.getDefault());
+        try {
+            List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if(listAddresses != null && listAddresses.size() > 0){
+                Address a = listAddresses.get(0);
+                return TextUtils.isEmpty(a.getLocality()) ? a.getAdminArea() : a.getLocality();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
