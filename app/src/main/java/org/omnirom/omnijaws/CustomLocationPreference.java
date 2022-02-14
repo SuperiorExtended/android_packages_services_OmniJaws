@@ -24,6 +24,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -55,7 +56,7 @@ public class CustomLocationPreference extends EditTextPreference implements Weat
     protected void onSetInitialValue(Object defaultValue) {
         super.onSetInitialValue(defaultValue);
         String location = Config.getLocationName(getContext());
-        if (location != null) {
+        if (!TextUtils.isEmpty(location)) {
             setSummary(location);
         } else {
             setSummary(R.string.weather_custom_location_missing);

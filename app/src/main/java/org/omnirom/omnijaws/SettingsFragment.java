@@ -122,6 +122,8 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
                 && !mPrefs.getBoolean(Config.PREF_KEY_CUSTOM_LOCATION, false)) {
             checkLocationEnabled();
         }
+        initCustomLocationPreference();
+
         mWeatherIconPack = (ListPreference) findPreference(WEATHER_ICON_PACK);
 
         if (mShowIconPack) {
@@ -343,6 +345,16 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
         mLocation.setText(result.city);
         mLocation.setSummary(result.city);
         forceRefreshWeatherSettings();
+    }
+
+    private void initCustomLocationPreference() {
+        String city = Config.getLocationName(getContext());
+        if (!TextUtils.isEmpty(city)) {
+            mLocation.setText(city);
+            mLocation.setSummary(city);
+        } else {
+            mLocation.setSummary(R.string.weather_custom_location_missing);
+        }
     }
 
     private void getAvailableWeatherIconPacks(List<String> entries, List<String> values) {
