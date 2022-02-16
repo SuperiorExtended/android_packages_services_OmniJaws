@@ -47,4 +47,16 @@
         <item>6</item>
         <item>12</item>
     </string-array>
+    <string-array name="color_theme_entries" translatable="false">
+        <item>@string/theme_system</item>
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_transparent</item>
+    </string-array>
+    <string-array name="color_theme_values" translatable="false">
+        <item>1</item>
+        <item>3</item>
+        <item>2</item>
+        <item>0</item>
+    </string-array>
 </resources>

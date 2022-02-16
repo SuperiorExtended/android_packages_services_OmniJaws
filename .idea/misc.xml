@@ -3,9 +3,22 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_humidity_symbol_small.xml" value="0.2415" />
         <entry key="app/src/main/res/drawable/ic_qs_weather_default_on.xml" value="0.266" />
+        <entry key="app/src/main/res/drawable/ic_wind_direction_symbol.xml" value="0.2415" />
+        <entry key="app/src/main/res/drawable/ic_wind_direction_symbol_small.xml" value="0.2415" />
+        <entry key="app/src/main/res/drawable/ic_wind_symbol.xml" value="0.2415" />
+        <entry key="app/src/main/res/drawable/ic_wind_symbol_small.xml" value="0.2415" />
+        <entry key="app/src/main/res/drawable/outline_16.xml" value="0.266" />
+        <entry key="app/src/main/res/drawable/weather_appwidget_bg.xml" value="0.1315" />
+        <entry key="app/src/main/res/layout-land/weather_appwidget_large.xml" value="0.4074074074074074" />
+        <entry key="app/src/main/res/layout-land/weather_appwidget_small.xml" value="0.2588183421516755" />
         <entry key="app/src/main/res/layout/content_weather.xml" value="0.24240121580547114" />
+        <entry key="app/src/main/res/layout/preference_button.xml" value="0.4365942028985507" />
         <entry key="app/src/main/res/layout/weather_appwidget.xml" value="0.24240121580547114" />
+        <entry key="app/src/main/res/layout/weather_appwidget_large.xml" value="0.3182291666666667" />
+        <entry key="app/src/main/res/layout/weather_appwidget_small.xml" value="0.3182291666666667" />
+        <entry key="app/src/main/res/layout/weather_appwidget_wide.xml" value="0.3182291666666667" />
         <entry key="app/src/main/res/layout/weather_forecast_view.xml" value="0.24240121580547114" />
         <entry key="app/src/main/res/xml/weather_appwidget_configure.xml" value="0.22010869565217392" />
       </map>

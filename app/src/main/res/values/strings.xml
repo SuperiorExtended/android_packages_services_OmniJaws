@@ -71,5 +71,10 @@
     <string name="omnijaws_service_last_update">Last update:</string>
     <string name="omnijaws_service_error_location">No location available</string>
     <string name="omnijaws_service_error_network">No network found</string>
-
+    <string name="weather_widget_desc">"Actual weather and 4-day forecast"</string>
+    <string name="theme_system">System default</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_transparent">Transparent</string>
+    <string name="color_theme_title">Theme</string>
 </resources>

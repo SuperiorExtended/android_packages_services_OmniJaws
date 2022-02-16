@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2017 The OmniROM Project
 
   This program is free software: you can redistribute it and/or modify
@@ -16,15 +15,16 @@
   along with this program.	If not, see <http://www.gnu.org/licenses/>.
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="@dimen/weather_widget_width"
-    android:minHeight="@dimen/weather_widget_height"
-    android:updatePeriodMillis="1800000"
-    android:previewImage="@drawable/appwidget_weather_preview"
-    android:initialLayout="@layout/weather_appwidget"
-    android:resizeMode="vertical|horizontal"
-    android:minResizeWidth="@dimen/min_weather_widget_resize_width"
-    android:minResizeHeight="@dimen/min_weather_widget_resize_height"
-    android:widgetCategory="home_screen"
     android:configure="org.omnirom.omnijaws.widget.WeatherAppWidgetConfigure"
-    >
-</appwidget-provider>
+    android:initialLayout="@layout/weather_appwidget_large"
+    android:minResizeWidth="57dp"
+    android:minResizeHeight="51dp"
+    android:maxResizeWidth="500dp"
+    android:maxResizeHeight="220dp"
+    android:previewImage="@drawable/appwidget_weather_preview"
+    android:resizeMode="vertical|horizontal"
+    android:targetCellWidth="4"
+    android:targetCellHeight="2"
+    android:updatePeriodMillis="1800000"
+    android:widgetCategory="home_screen"
+    android:description="@string/weather_widget_desc"/>

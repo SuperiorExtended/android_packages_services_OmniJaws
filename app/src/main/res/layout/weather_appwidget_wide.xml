@@ -19,11 +19,17 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/background_shadow"
+        android:id="@android:id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/weather_appwidget_bg"
-        android:orientation="vertical" />
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/background_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/weather_appwidget_bg" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/weather_data"
@@ -33,58 +39,10 @@
         android:padding="@dimen/widget_padding">
 
         <LinearLayout
-            android:id="@+id/current_weather_line"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/current_weather_city"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="2"
-                android:ellipsize="end"
-                android:paddingStart="10dp"
-                android:singleLine="true"
-                android:textAppearance="@style/Weather" />
-
-            <TextView
-                android:id="@+id/current_weather_data"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="4"
-                android:ellipsize="end"
-                android:gravity="center_horizontal"
-                android:singleLine="true"
-                android:textAppearance="@style/Weather" />
-
-            <TextView
-                android:id="@+id/current_weather_timestamp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="2"
-                android:gravity="end"
-                android:paddingEnd="10dp"
-                android:singleLine="true"
-                android:textAppearance="@style/Weather" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical" />
-
-        <LinearLayout
             android:id="@+id/condition_line"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -97,18 +55,18 @@
 
                 <ImageView
                     android:id="@+id/current_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/widget_wide_image_size"
+                    android:layout_height="@dimen/widget_wide_image_size"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="centerInside" />
 
                 <TextView
-                    android:id="@+id/current_text"
+                    android:id="@+id/current_data"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:singleLine="true"
-                    android:textAppearance="@style/Weather" />
+                    android:textAppearance="@style/WeatherSmall" />
 
             </LinearLayout>
 
@@ -122,18 +80,18 @@
 
                 <ImageView
                     android:id="@+id/forecast_image_0"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/widget_wide_image_size"
+                    android:layout_height="@dimen/widget_wide_image_size"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="centerInside" />
 
                 <TextView
-                    android:id="@+id/forecast_text_0"
+                    android:id="@+id/forecast_data_0"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:singleLine="true"
-                    android:textAppearance="@style/Weather" />
+                    android:textAppearance="@style/WeatherSmall" />
 
             </LinearLayout>
 
@@ -147,18 +105,18 @@
 
                 <ImageView
                     android:id="@+id/forecast_image_1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/widget_wide_image_size"
+                    android:layout_height="@dimen/widget_wide_image_size"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="centerInside" />
 
                 <TextView
-                    android:id="@+id/forecast_text_1"
+                    android:id="@+id/forecast_data_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:singleLine="true"
-                    android:textAppearance="@style/Weather" />
+                    android:textAppearance="@style/WeatherSmall" />
 
             </LinearLayout>
 
@@ -172,18 +130,18 @@
 
                 <ImageView
                     android:id="@+id/forecast_image_2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/widget_wide_image_size"
+                    android:layout_height="@dimen/widget_wide_image_size"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="centerInside" />
 
                 <TextView
-                    android:id="@+id/forecast_text_2"
+                    android:id="@+id/forecast_data_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:singleLine="true"
-                    android:textAppearance="@style/Weather" />
+                    android:textAppearance="@style/WeatherSmall" />
 
             </LinearLayout>
 
@@ -197,18 +155,19 @@
 
                 <ImageView
                     android:id="@+id/forecast_image_3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/widget_wide_image_size"
+                    android:layout_height="@dimen/widget_wide_image_size"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="centerInside" />
 
+
                 <TextView
-                    android:id="@+id/forecast_text_3"
+                    android:id="@+id/forecast_data_3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:singleLine="true"
-                    android:textAppearance="@style/Weather" />
+                    android:textAppearance="@style/WeatherSmall" />
 
             </LinearLayout>
 
@@ -222,18 +181,18 @@
 
                 <ImageView
                     android:id="@+id/forecast_image_4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/widget_wide_image_size"
+                    android:layout_height="@dimen/widget_wide_image_size"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="centerInside" />
 
                 <TextView
-                    android:id="@+id/forecast_text_4"
+                    android:id="@+id/forecast_data_4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:singleLine="true"
-                    android:textAppearance="@style/Weather" />
+                    android:textAppearance="@style/WeatherSmall" />
 
             </LinearLayout>
         </LinearLayout>
@@ -256,11 +215,6 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical" />
     </LinearLayout>
 
 </FrameLayout>

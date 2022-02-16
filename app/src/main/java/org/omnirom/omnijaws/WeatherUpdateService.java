@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 
 public class WeatherUpdateService extends JobService {
     private static final String TAG = "WeatherUpdateService";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private static final String ACTION_BROADCAST = "org.omnirom.omnijaws.WEATHER_UPDATE";
     private static final String ACTION_ERROR = "org.omnirom.omnijaws.WEATHER_ERROR";
 

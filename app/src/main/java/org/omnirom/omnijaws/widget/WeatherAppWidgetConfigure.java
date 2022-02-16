@@ -22,10 +22,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -34,17 +31,18 @@ import android.view.MenuItem;
 import android.view.View;
 
 import org.omnirom.omnijaws.R;
-import org.omnirom.omnijaws.client.OmniJawsClient;
 
-import java.util.ArrayList;
-import java.util.List;
+public class WeatherAppWidgetConfigure extends PreferenceActivity implements Preference.OnPreferenceChangeListener {
 
-public class WeatherAppWidgetConfigure extends PreferenceActivity {
-
-    public static final String KEY_BACKGROUND_SHADOW = "show_background";
-    public static final String KEY_WITH_FORECAST = "with_forecast";
+    public static final String KEY_COLOR_THEME = "color_theme";
+    public static final int COLOR_THEME_DEFAULT = 1;
+    public static final int COLOR_THEME_LIGHT = 3;
+    public static final int COLOR_THEME_DARK = 2;
+    public static final int COLOR_THEME_SYSTEM = 1;
+    public static final int COLOR_THEME_TRANSPARENT = 0;
 
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private ListPreference mColorTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,19 +65,15 @@ public class WeatherAppWidgetConfigure extends PreferenceActivity {
         }
 
         addPreferencesFromResource(R.xml.weather_appwidget_configure);
+
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        initPreference(KEY_BACKGROUND_SHADOW, prefs.getBoolean(KEY_BACKGROUND_SHADOW + "_" + mAppWidgetId, false));
-        initPreference(KEY_WITH_FORECAST, prefs.getBoolean(KEY_WITH_FORECAST + "_" + mAppWidgetId, true));
-    }
-
-    private void initPreference(String key, boolean value) {
-        CheckBoxPreference b = (CheckBoxPreference) findPreference(key);
-        b.setKey(key + "_" + String.valueOf(mAppWidgetId));
-        b.setDefaultValue(value);
-        b.setChecked(value);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs.edit().putBoolean(b.getKey(), value).commit();
+        int value = prefs.getInt(WeatherAppWidgetConfigure.KEY_COLOR_THEME + "_" + mAppWidgetId, WeatherAppWidgetConfigure.COLOR_THEME_DEFAULT);
+        mColorTheme = (ListPreference) findPreference(WeatherAppWidgetConfigure.KEY_COLOR_THEME);
+        mColorTheme.setValue(String.valueOf(value));
+        int idx = mColorTheme.findIndexOfValue(String.valueOf(value));
+        mColorTheme.setSummary(mColorTheme.getEntries()[idx]);
+        mColorTheme.setOnPreferenceChangeListener(this);
     }
 
     public void handleOkClick(View v) {
@@ -92,20 +86,15 @@ public class WeatherAppWidgetConfigure extends PreferenceActivity {
 
     public static void clearPrefs(Context context, int id) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        prefs.edit().remove(KEY_BACKGROUND_SHADOW + "_" + id).commit();
-        prefs.edit().remove(KEY_WITH_FORECAST + "_" + id).commit();
+        prefs.edit().remove(KEY_COLOR_THEME + "_" + id).commit();
     }
 
     public static void remapPrefs(Context context, int oldId, int newId) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-        boolean oldBoolean = prefs.getBoolean(KEY_BACKGROUND_SHADOW + "_" + oldId, false);
-        prefs.edit().putBoolean(KEY_BACKGROUND_SHADOW + "_" + newId, oldBoolean).commit();
-        prefs.edit().remove(KEY_BACKGROUND_SHADOW + "_" + oldId).commit();
-
-        oldBoolean = prefs.getBoolean(KEY_WITH_FORECAST + "_" + oldId, true);
-        prefs.edit().putBoolean(KEY_WITH_FORECAST + "_" + newId, oldBoolean).commit();
-        prefs.edit().remove(KEY_WITH_FORECAST + "_" + oldId).commit();
+        int oldValue = prefs.getInt(KEY_COLOR_THEME + "_" + oldId, COLOR_THEME_DEFAULT);
+        prefs.edit().putInt(KEY_COLOR_THEME + "_" + newId, oldValue).commit();
+        prefs.edit().remove(KEY_COLOR_THEME + "_" + oldId).commit();
     }
 
     @Override
@@ -123,5 +112,18 @@ public class WeatherAppWidgetConfigure extends PreferenceActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+        if (preference.equals(mColorTheme)) {
+            String newTheme = (String) newValue;
+            SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
+            prefs.edit().putInt(WeatherAppWidgetConfigure.KEY_COLOR_THEME + "_" + mAppWidgetId, Integer.valueOf(newTheme)).commit();
+            int idx = mColorTheme.findIndexOfValue(newTheme);
+            mColorTheme.setSummary(mColorTheme.getEntries()[idx]);
+            return true;
+        }
+        return false;
     }
 }

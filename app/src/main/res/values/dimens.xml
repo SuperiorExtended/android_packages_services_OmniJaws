@@ -3,11 +3,12 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="weather_widget_width">300dp</dimen>
-    <dimen name="weather_widget_height">45dp</dimen>
-    <dimen name="min_weather_widget_resize_width">45dp</dimen>
+    <dimen name="weather_widget_height">40dp</dimen>
+    <dimen name="min_weather_widget_resize_width">40dp</dimen>
     <dimen name="min_weather_widget_resize_height">40dp</dimen>
     <dimen name="weather_refresh_icon_size">40dp</dimen>
-    <dimen name="widget_padding">10dp</dimen>
+    <dimen name="widget_padding">5dp</dimen>
+    <dimen name="widget_padding_large">16dp</dimen>
     <dimen name="medium_text_size">20sp</dimen>
     <dimen name="big_text_size">60sp</dimen>
     <dimen name="current_height">150dp</dimen>
@@ -15,4 +16,6 @@
     <dimen name="forecast_text_size">16sp</dimen>
     <dimen name="header_text_size">22dp</dimen>
     <dimen name="action_icon_size">30dp</dimen>
+    <dimen name="widget_wide_image_size">50dp</dimen>
+    <dimen name="widget_large_image_size">72dp</dimen>
 </resources>
