@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
@@ -30,24 +31,24 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class NetworkUtils {
     private static final boolean DEBUG = false;
-    private static final String TAG = "NetworkUtils";
+    private static final String TAG = "WeatherService::NetworkUtils";
 
     private static final int HTTP_READ_TIMEOUT = 60000;
     private static final int HTTP_CONNECTION_TIMEOUT = 60000;
 
-    public static HttpsURLConnection setupHttpsRequest(String urlStr) {
+    public static HttpURLConnection setupHttpRequest(String urlStr) {
         URL url;
-        HttpsURLConnection urlConnection = null;
+        HttpURLConnection urlConnection = null;
         try {
             url = new URL(urlStr);
-            urlConnection = (HttpsURLConnection) url.openConnection();
+            urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setConnectTimeout(HTTP_CONNECTION_TIMEOUT);
             urlConnection.setReadTimeout(HTTP_READ_TIMEOUT);
             urlConnection.setRequestMethod("GET");
             urlConnection.setDoInput(true);
             urlConnection.connect();
             int code = urlConnection.getResponseCode();
-            if (code != HttpsURLConnection.HTTP_OK) {
+            if (code != HttpURLConnection.HTTP_OK) {
                 Log.d(TAG, "response:" + code);
                 return null;
             }
@@ -61,9 +62,9 @@ public class NetworkUtils {
     public static String downloadUrlMemoryAsString(String url) {
         if (DEBUG) Log.d(TAG, "download: " + url);
 
-        HttpsURLConnection urlConnection = null;
+        HttpURLConnection urlConnection = null;
         try {
-            urlConnection = setupHttpsRequest(url);
+            urlConnection = setupHttpRequest(url);
             if (urlConnection == null) {
                 return null;
             }

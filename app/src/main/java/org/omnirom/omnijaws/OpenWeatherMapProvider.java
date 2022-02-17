@@ -16,11 +16,7 @@
 
 package org.omnirom.omnijaws;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -33,10 +29,7 @@ import org.omnirom.omnijaws.WeatherInfo.DayForecast;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -47,54 +40,16 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
     private static final String PART_COORDINATES =
             "lat=%f&lon=%f";
     private static final String URL_WEATHER =
-            "http://api.openweathermap.org/data/2.5/onecall?%s&mode=json&units=%s&lang=%s&cnt=" + FORECAST_DAYS + "&appid=%s";
-    private static final String URL_PLACES =
-            "http://api.geonames.org/searchJSON?q=%s&lang=%s&username=omnijaws&isNameRequired=true";
+            "https://api.openweathermap.org/data/2.5/onecall?%s&mode=json&units=%s&lang=%s&cnt=" + FORECAST_DAYS + "&appid=%s";
 
     private List<String> mKeys = new ArrayList<String>();
     private boolean mHasAPIKey;
     private int mRequestNumber;
-    private static final SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     public OpenWeatherMapProvider(Context context) {
         super(context);
         loadKeys();
         mHasAPIKey = getAPIKey() != null;
-    }
-
-    public List<WeatherInfo.WeatherLocation> getLocations(String input) {
-        String lang = Locale.getDefault().getLanguage().replaceFirst("_", "-");
-        String url = String.format(URL_PLACES, Uri.encode(input), lang);
-        String response = retrieve(url);
-        if (response == null) {
-            return null;
-        }
-        log(TAG, "URL = " + url + " returning a response of " + response);
-
-        try {
-            JSONArray jsonResults = new JSONObject(response).getJSONArray("geonames");
-            ArrayList<WeatherInfo.WeatherLocation> results = new ArrayList<>(jsonResults.length());
-            int count = jsonResults.length();
-
-            for (int i = 0; i < count; i++) {
-                JSONObject result = jsonResults.getJSONObject(i);
-                WeatherInfo.WeatherLocation location = new WeatherInfo.WeatherLocation();
-
-                String city = result.getString("name");
-                String area = result.getString("adminName1");
-
-                location.id = String.format(Locale.US, PART_COORDINATES, result.getDouble("lat"), result.getDouble("lng"));
-                location.city = city;
-                location.countryId = city.equals(area) ? result.getString("countryName") : result.getString("countryName") + ", " + area;
-                results.add(location);
-            }
-
-            return results;
-        } catch (JSONException e) {
-            Log.w(TAG, "Received malformed location data (input=" + input + ")", e);
-        }
-
-        return null;
     }
 
     public WeatherInfo getCustomWeather(String id, boolean metric) {
@@ -132,12 +87,9 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
                 windSpeed *= 3.6f;
             }
 
-            String localizedCityName = getNameLocality(selection);
-            if (TextUtils.isEmpty(localizedCityName)) {
-                localizedCityName = mContext.getResources().getString(R.string.omnijaws_city_unkown);
-            }
+            String city = getWeatherDataLocality(selection);
 
-            WeatherInfo w = new WeatherInfo(mContext, selection, localizedCityName,
+            WeatherInfo w = new WeatherInfo(mContext, selection, city,
                     /* condition */ weather.getString("main"),
                     /* conditionCode */ mapConditionIconToCode(
                             weather.getString("icon"), weather.getInt("id")),
@@ -391,29 +343,5 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
 
     public boolean shouldRetry() {
         return false;
-    }
-
-    private String getDay(int i) {
-        Calendar calendar = Calendar.getInstance();
-        if(i > 0) {
-            calendar.add(Calendar.DATE, i);
-        }
-        return dayFormat.format(calendar.getTime());
-    }
-
-    private String getNameLocality(String coordinate) {
-        double latitude = Double.valueOf(coordinate.substring(4, coordinate.indexOf("&")));
-        double longitude = Double.valueOf(coordinate.substring(coordinate.indexOf("lon=") + 4));
-        Geocoder geocoder = new Geocoder(mContext.getApplicationContext(), Locale.getDefault());
-        try {
-            List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
-            if(listAddresses != null && listAddresses.size() > 0){
-                Address a = listAddresses.get(0);
-                return TextUtils.isEmpty(a.getLocality()) ? a.getAdminArea() : a.getLocality();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

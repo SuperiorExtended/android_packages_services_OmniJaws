@@ -181,15 +181,8 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
         if (preference == mCustomLocation) {
             if (!mCustomLocation.isChecked()) {
                 checkLocationEnabled();
-            } else {
-                if (Config.getLocationName(getContext()) != null) {
-                    // city ids are provider specific - so we need to recheck
-                    // cause provider migth be changed while unchecked
-                    new WeatherLocationTask(getContext(), Config.getLocationName(getContext()), this).execute();
-                } else {
-                    disableService();
-                }
             }
+            forceRefreshWeatherSettings();
             return true;
         } else if (preference == mUpdateStatus) {
             forceRefreshWeatherSettings();

@@ -38,7 +38,9 @@ import android.util.Log;
 
 import org.omnirom.omnijaws.widget.WeatherAppWidgetProvider;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class WeatherUpdateService extends JobService {
@@ -64,9 +66,9 @@ public class WeatherUpdateService extends JobService {
     private HandlerThread mHandlerThread;
     private Handler mHandler;
     private PowerManager.WakeLock mWakeLock;
+    private static final SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     private static final Criteria sLocationCriteria;
-
     static {
         sLocationCriteria = new Criteria();
         sLocationCriteria.setPowerRequirement(Criteria.POWER_LOW);
@@ -95,7 +97,7 @@ public class WeatherUpdateService extends JobService {
         mHandlerThread.start();
         mHandler = new Handler(mHandlerThread.getLooper());
         PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG + ":update");
         mWakeLock.setReferenceCounted(true);
     }
 
@@ -158,6 +160,7 @@ public class WeatherUpdateService extends JobService {
         if (location != null) {
             long delta = System.currentTimeMillis() - location.getTime();
             needsUpdate = delta > OUTDATED_LOCATION_THRESHOLD_MILLIS;
+            Log.w(TAG, "Ignoring too old location from " + dayFormat.format(location.getTime()));
         }
         if (needsUpdate) {
             if (DEBUG) Log.d(TAG, "Getting best location provider");
