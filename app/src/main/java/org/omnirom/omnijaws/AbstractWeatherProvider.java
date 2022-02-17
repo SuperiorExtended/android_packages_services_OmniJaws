@@ -41,22 +41,7 @@ public abstract class AbstractWeatherProvider {
     }
 
     protected String retrieve(String url) {
-        HttpGet request = new HttpGet(url);
-        try {
-            HttpResponse response = new DefaultHttpClient().execute(request);
-            int code = response.getStatusLine().getStatusCode();
-            if (code != HttpStatus.SC_OK) {
-                log(TAG, "HttpStatus: " + code + " for url: " + url);
-                return null;
-            }
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                return EntityUtils.toString(entity);
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Couldn't retrieve data from url " + url, e);
-        }
-        return null;
+        return NetworkUtils.downloadUrlMemoryAsString(url);
     }
 
     public abstract WeatherInfo getCustomWeather(String id, boolean metric);
