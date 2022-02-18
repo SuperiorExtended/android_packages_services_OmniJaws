@@ -51,9 +51,9 @@ public abstract class AbstractWeatherProvider {
     protected Context mContext;
     private static final SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     private static final String URL_PLACES =
-            "http://api.geonames.org/searchJSON?q=%s&lang=%s&username=omnijaws&maxRows=20";
+            "https://secure.geonames.org/searchJSON?q=%s&lang=%s&username=omnijaws&maxRows=20";
     private static final String URL_LOCALITY =
-            "http://api.geonames.org/extendedFindNearbyJSON?lat=%f&lng=%f&lang=%s&username=omnijaws";
+            "https://secure.geonames.org/extendedFindNearbyJSON?lat=%f&lng=%f&lang=%s&username=omnijaws";
     private static final String PART_COORDINATES =
             "lat=%f&lon=%f";
     private static HashSet<String> FCODE_SET = Stream.of("PCLI", "PPLA", "PPLA2", "ADM3", "ADM2", "ADM1")
