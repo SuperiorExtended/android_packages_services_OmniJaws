@@ -46,10 +46,11 @@ public class NetworkUtils {
             urlConnection.setReadTimeout(HTTP_READ_TIMEOUT);
             urlConnection.setRequestMethod("GET");
             urlConnection.setDoInput(true);
+            urlConnection.addRequestProperty("User-Agent", "OmniJawsApp/1.0");
             urlConnection.connect();
             int code = urlConnection.getResponseCode();
             if (code != HttpURLConnection.HTTP_OK) {
-                Log.d(TAG, "response:" + code);
+                Log.w(TAG, "response:" + code);
                 return null;
             }
             return urlConnection;

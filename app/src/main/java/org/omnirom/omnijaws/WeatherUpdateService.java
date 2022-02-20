@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 
 public class WeatherUpdateService extends JobService {
     private static final String TAG = "WeatherUpdateService";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final String ACTION_BROADCAST = "org.omnirom.omnijaws.WEATHER_UPDATE";
     private static final String ACTION_ERROR = "org.omnirom.omnijaws.WEATHER_ERROR";
 
@@ -66,7 +66,7 @@ public class WeatherUpdateService extends JobService {
     private HandlerThread mHandlerThread;
     private Handler mHandler;
     private PowerManager.WakeLock mWakeLock;
-    private static final SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+    private static final SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
 
     private static final Criteria sLocationCriteria;
     static {
@@ -127,7 +127,7 @@ public class WeatherUpdateService extends JobService {
             }
             Config.clearLastUpdateTime(this);
 
-            if (DEBUG) Log.d(TAG, "updateWeather");
+            Log.d(TAG, "updateWeather");
             updateWeather();
         } finally {
             mWakeLock.release();
@@ -160,7 +160,9 @@ public class WeatherUpdateService extends JobService {
         if (location != null) {
             long delta = System.currentTimeMillis() - location.getTime();
             needsUpdate = delta > OUTDATED_LOCATION_THRESHOLD_MILLIS;
-            Log.w(TAG, "Ignoring too old location from " + dayFormat.format(location.getTime()));
+            if (needsUpdate) {
+                Log.w(TAG, "Ignoring too old location from " + dayFormat.format(location.getTime()));
+            }
         }
         if (needsUpdate) {
             if (DEBUG) Log.d(TAG, "Getting best location provider");

@@ -16,6 +16,7 @@
 package org.omnirom.omnijaws;
 
 import org.omnirom.omnijaws.WeatherInfo.DayForecast;
+import org.omnirom.omnijaws.client.OmniJawsClient;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -34,6 +35,7 @@ public class WeatherContentProvider extends ContentProvider {
 
     private static final int URI_TYPE_WEATHER = 1;
     private static final int URI_TYPE_SETTINGS = 2;
+    private static final int URI_TYPE_CONTROL = 3;
 
     private static final String COLUMN_CURRENT_CITY_ID = "city_id";
     private static final String COLUMN_CURRENT_CITY = "city";
@@ -59,6 +61,8 @@ public class WeatherContentProvider extends ContentProvider {
     private static final String COLUMN_LOCATION = "location";
     private static final String COLUMN_SETUP = "setup";
     private static final String COLUMN_ICON_PACK = "icon_pack";
+
+    public static final String COLUMN_FORCE_REFRESH = "update";
 
     private static final String[] PROJECTION_DEFAULT_WEATHER = new String[] {
             COLUMN_CURRENT_CITY_ID,
@@ -95,6 +99,7 @@ public class WeatherContentProvider extends ContentProvider {
         sUriMatcher = new UriMatcher(URI_TYPE_WEATHER);
         sUriMatcher.addURI(AUTHORITY, "weather", URI_TYPE_WEATHER);
         sUriMatcher.addURI(AUTHORITY, "settings", URI_TYPE_SETTINGS);
+        sUriMatcher.addURI(AUTHORITY, "control", URI_TYPE_CONTROL);
     }
 
     private Context mContext;
@@ -191,6 +196,13 @@ public class WeatherContentProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        final int projectionType = sUriMatcher.match(uri);
+        if (projectionType == URI_TYPE_CONTROL) {
+            if (values.containsKey(COLUMN_FORCE_REFRESH) && values.getAsBoolean(COLUMN_FORCE_REFRESH)) {
+                if (DEBUG) Log.i(TAG, "update: " + uri.toString() + " " + values);
+                WeatherUpdateService.scheduleUpdateNow(mContext);
+            }
+        }
         return 0;
     }
 

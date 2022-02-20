@@ -50,7 +50,8 @@ public class OmniJawsClient {
             = Uri.parse("content://org.omnirom.omnijaws.provider/weather");
     public static final Uri SETTINGS_URI
             = Uri.parse("content://org.omnirom.omnijaws.provider/settings");
-
+    public static final Uri CONTROL_URI
+            = Uri.parse("content://org.omnirom.omnijaws.provider/control");
     private static final String ICON_PACKAGE_DEFAULT = "org.omnirom.omnijaws";
     private static final String ICON_PREFIX_DEFAULT = "outline";
     private static final String EXTRA_ERROR = "error";
@@ -75,7 +76,7 @@ public class OmniJawsClient {
             "pin_wheel"
     };
 
-    final String[] SETTINGS_PROJECTION = new String[] {
+    public static final String[] SETTINGS_PROJECTION = new String[] {
             "enabled",
             "units",
             "provider",
@@ -324,18 +325,6 @@ public class OmniJawsClient {
     }
 
     public Drawable getWeatherConditionImage(int conditionCode) {
-        if (!isOmniJawsEnabled()) {
-            Log.w(TAG, "Requesting condition image while disabled");
-            return getDefaultConditionImage();
-        }
-        if (!isAvailableApp(mPackageName)) {
-            Log.w(TAG, "Icon pack no longer available - loading default " + mPackageName);
-            loadDefaultIconsPackage();
-        }
-        if (mRes == null) {
-            Log.w(TAG, "Requesting condition image while disabled");
-            return getDefaultConditionImage();
-        }
         try {
             int resId = mRes.getIdentifier(mIconPrefix + "_" + conditionCode, "drawable", mPackageName);
             Drawable d = mRes.getDrawable(resId);
@@ -376,27 +365,6 @@ public class OmniJawsClient {
             }
         } catch (Exception e) {
             Log.e(TAG, "isOmniJawsEnabled", e);
-        }
-        return false;
-    }
-
-    public boolean isOmniJawsSetupDone() {
-        if (!isOmniJawsServiceInstalled()) {
-            return false;
-        }
-        try {
-            final Cursor c = mContext.getContentResolver().query(SETTINGS_URI, SETTINGS_PROJECTION,
-                    null, null, null);
-            if (c != null) {
-                int count = c.getCount();
-                if (count == 1) {
-                    c.moveToPosition(0);
-                    boolean setupDone = c.getInt(3) == 1;
-                    return setupDone;
-                }
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "isOmniJawsSetupDone", e);
         }
         return false;
     }

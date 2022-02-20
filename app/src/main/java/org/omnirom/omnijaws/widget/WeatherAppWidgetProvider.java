@@ -125,10 +125,10 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
                                           int appWidgetId, Bundle newOptions) {
         if (LOGGING) {
             Log.i(TAG, "onAppWidgetOptionsChanged");
+            ArrayList<SizeF> sizes =
+                    newOptions.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES);
+            Log.d(TAG, "size = " + sizes);
         }
-        ArrayList<SizeF> sizes =
-                newOptions.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES);
-        Log.d(TAG, "size = " + sizes);
 
         updateWeather(context, appWidgetManager, appWidgetId);
     }

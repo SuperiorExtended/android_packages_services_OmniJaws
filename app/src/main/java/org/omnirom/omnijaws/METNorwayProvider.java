@@ -5,10 +5,7 @@ package org.omnirom.omnijaws;
 import android.content.Context;
 import android.location.Location;
 import android.util.Log;
-import android.text.TextUtils;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.params.CoreProtocolPNames;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,15 +18,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 
-import java.io.IOException;
 import java.util.TimeZone;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 
 public class METNorwayProvider extends AbstractWeatherProvider {
     private static final String TAG = "METNorwayProvider";
@@ -281,28 +270,6 @@ public class METNorwayProvider extends AbstractWeatherProvider {
             condition = condition.substring(0, endIndex);
         }
         return SYMBOL_CODE_MAPPING.getOrDefault(condition, 0);
-    }
-
-    @Override
-    protected String retrieve(String url) {
-        HttpGet request = new HttpGet(url);
-        try {
-            HttpClient client = new DefaultHttpClient();
-            client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, "OmniJawsApp/1.0");
-            HttpResponse response = client.execute(request);
-            int code = response.getStatusLine().getStatusCode();
-            if (!(code == HttpStatus.SC_OK || code == HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION)) {
-                log(TAG, "HttpStatus: " + code + " for url: " + url);
-                return null;
-            }
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                return EntityUtils.toString(entity);
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Couldn't retrieve data from url " + url, e);
-        }
-        return null;
     }
 
     private void initTimeZoneFormat() {

@@ -17,10 +17,9 @@
  */
 package org.omnirom.omnijaws;
 
+import android.content.ContentValues;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.VectorDrawable;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -132,9 +131,10 @@ public class DetailedWeatherView extends FrameLayout {
         mActivity.updateHourColor();
         mProgressContainer.setVisibility(View.GONE);
 
-        if (weatherData == null || !mWeatherClient.isOmniJawsEnabled()) {
+        boolean serviceDisabled = !mWeatherClient.isOmniJawsEnabled();
+        if (weatherData == null || serviceDisabled) {
             setErrorView();
-            if (mWeatherClient.isOmniJawsEnabled()) {
+            if (!serviceDisabled) {
                 mEmptyViewImage.setImageResource(R.drawable.ic_qs_weather_default_on);
                 mStatusMsg.setText(getResources().getString(R.string.omnijaws_service_waiting));
             } else {
@@ -250,7 +250,12 @@ public class DetailedWeatherView extends FrameLayout {
     public void forceRefresh() {
         if (mWeatherClient.isOmniJawsEnabled()) {
             startProgress();
-            WeatherUpdateService.scheduleUpdateNow(getContext());
+            ContentValues values = new ContentValues();
+            values.put(WeatherContentProvider.COLUMN_FORCE_REFRESH, true);
+            getContext().getContentResolver().update(OmniJawsClient.CONTROL_URI,
+                    values, "", null);
+
+            //WeatherUpdateService.scheduleUpdateNow(getContext());
         }
     }
 }

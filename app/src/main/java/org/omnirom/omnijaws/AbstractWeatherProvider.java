@@ -25,14 +25,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -47,7 +40,7 @@ import java.util.stream.Stream;
 
 public abstract class AbstractWeatherProvider {
     private static final String TAG = "AbstractWeatherProvider";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     protected Context mContext;
     private static final SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     private static final String URL_PLACES =
