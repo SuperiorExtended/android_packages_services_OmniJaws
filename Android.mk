@@ -23,6 +23,13 @@ LOCAL_PRODUCT_MODULE := true
 LOCAL_MODULE_TAGS := optional
 LOCAL_SDK_VERSION := system_current
 LOCAL_REQUIRED_MODULES := default_permissions_org.omnirom.omnijaws.xml
+
+LOCAL_STATIC_ANDROID_LIBRARIES := \
+    com.google.android.material_material \
+    SettingsLib
+
+include frameworks/base/packages/SettingsLib/common.mk
+
 include $(BUILD_PACKAGE)
 
 include $(CLEAR_VARS)

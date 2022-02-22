@@ -80,9 +80,9 @@ public class SettingsActivityService extends PreferenceActivity implements OnPre
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (getActionBar() != null) {
+        /*if (getActionBar() != null) {
             getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        }*/
         doLoadPreferences();
     }
 
