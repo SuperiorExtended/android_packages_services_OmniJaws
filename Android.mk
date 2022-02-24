@@ -21,7 +21,10 @@ LOCAL_SRC_FILES := $(call all-subdir-java-files)
 LOCAL_PACKAGE_NAME := OmniJaws
 LOCAL_PRODUCT_MODULE := true
 LOCAL_MODULE_TAGS := optional
-LOCAL_SDK_VERSION := system_current
+LOCAL_PRIVATE_PLATFORM_APIS := true
+LOCAL_PRIVILEGED_MODULE := true
+LOCAL_CERTIFICATE := platform
+LOCAL_SYSTEM_EXT_MODULE := true
 LOCAL_REQUIRED_MODULES := default_permissions_org.omnirom.omnijaws.xml
 
 LOCAL_STATIC_ANDROID_LIBRARIES := \
@@ -36,6 +39,6 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := default_permissions_org.omnirom.omnijaws.xml
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_PATH := $(TARGET_OUT_PRODUCT_ETC)/default-permissions
-LOCAL_SRC_FILES := $(LOCAL_MODULE)
+LOCAL_MODULE_PATH := $(TARGET_OUT_SYSTEM_EXT_ETC)/permissions
+LOCAL_SYSTEM_EXT_MODULE := true
 include $(BUILD_PREBUILT)
