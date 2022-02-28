@@ -264,7 +264,7 @@ public class METNorwayProvider extends AbstractWeatherProvider {
     /* Thanks Chronus(app) */
     private static final int[] arrayWeatherIconToCode = {-1, /*1*/ 32, /*2*/ 34, /*3*/ 30, /*4*/ 26, /*5*/ 40, /*6*/ 39, /*7*/ 6, /*8*/ 14, /*9*/ 11, /*10*/ 12, /*11*/ 4, /*12*/ 18, /*13*/ 16, /*14*/ 15, /*15*/ 20, /*16*/ -1, /*17*/ -1, /*18*/ -1, /*19*/ -1, /*20*/ 42, /*21*/ 42, /*22*/ 4, /*23*/ 6, /*24*/ 39, /*25*/ 39, /*26*/ 42, /*27*/ 42, /*28*/ 42, /*29*/ 42, /*30*/ 4, /*31*/ 6, /*32*/ 6, /*33*/ 15, /*34*/ 15, /*35*/ -1, /*36*/ -1, /*37*/ -1, /*38*/ -1, /*39*/ -1, /*40*/ 40, /*41*/ 40, /*42*/ 6, /*43*/ 6, /*44*/ 14, /*45*/ 14, /*46*/ 9, /*47*/ 18, /*48*/ 18, /*49*/ 16, /*50*/ 16};
 
-    private static int getPriorityCondition(String condition) {
+    private int getPriorityCondition(String condition) {
         int endIndex = condition.indexOf("_");
         if(endIndex != -1) {
             condition = condition.substring(0, endIndex);

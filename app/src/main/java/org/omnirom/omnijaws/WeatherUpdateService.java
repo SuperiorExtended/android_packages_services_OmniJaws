@@ -162,6 +162,7 @@ public class WeatherUpdateService extends JobService {
             needsUpdate = delta > OUTDATED_LOCATION_THRESHOLD_MILLIS;
             if (needsUpdate) {
                 Log.w(TAG, "Ignoring too old location from " + dayFormat.format(location.getTime()));
+                location = null;
             }
         }
         if (needsUpdate) {
