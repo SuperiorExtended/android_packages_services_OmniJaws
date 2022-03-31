@@ -60,6 +60,7 @@
             android:name=".WeatherContentProvider"
             android:authorities="org.omnirom.omnijaws.provider"
             android:exported="true"
+            android:grantUriPermissions="true"
             android:readPermission="org.omnirom.omnijaws.READ_WEATHER" />
 
         <receiver android:name=".SystemReceiver" android:exported="false">
