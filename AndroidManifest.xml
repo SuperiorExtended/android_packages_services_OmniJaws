@@ -79,6 +79,33 @@
             </intent-filter>
         </activity>
 
+        <activity
+			android:name=".weather"
+			android:label="LockClock (white)" android:exported="false">
+			<intent-filter>
+				<action android:name="org.omnirom.WeatherIconPack" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
+
+        <activity
+			android:name=".weather_color"
+			android:label="LockClock (color)" android:exported="false">
+			<intent-filter>
+				<action android:name="org.omnirom.WeatherIconPack" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
+
+		<activity
+			android:name=".weather_vclouds"
+			android:label="LockClock (vclouds)" android:exported="false">
+			<intent-filter>
+				<action android:name="org.omnirom.WeatherIconPack" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
+
         <receiver
             android:name=".widget.WeatherAppWidgetProvider"
             android:label="@string/weather_widget"
