@@ -31,6 +31,10 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+
+import android.widget.ListView;
 
 import org.omnirom.omnijaws.R;
 
@@ -68,6 +72,12 @@ public class WeatherAppWidgetConfigure extends PreferenceActivity {
         }
 
         addPreferencesFromResource(R.xml.weather_appwidget_configure);
+
+        // Remove those ugly dividers!!!
+    	ListView lv = getListView();
+        lv.setDivider(new ColorDrawable(Color.TRANSPARENT));
+        lv.setDividerHeight(0);
+
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         final ListPreference iconPack = (ListPreference) findPreference(KEY_ICON_PACK) ;

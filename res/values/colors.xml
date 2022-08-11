@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="widget_text_color">@android:color/white</color>
+    <color name="widget_text_color">@android:color/black</color>
+    <color name="weather_widget_bg_color">@*android:color/system_accent1_100</color>
 </resources>

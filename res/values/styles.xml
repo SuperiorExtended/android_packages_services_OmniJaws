@@ -1,12 +1,8 @@
 <resources>
     <style name="Weather" parent="@android:style/TextAppearance.DeviceDefault" >
         <item name="android:textSize">16sp</item>
-        <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/widget_text_color</item>
-        <item name="android:shadowColor">@android:color/black</item>
-        <item name="android:shadowDx">0</item>
-        <item name="android:shadowDy">2</item>
-        <item name="android:shadowRadius">5</item>
+        <item name="android:fontFamily">@*android:string/config_bodyFontFamilyMedium</item>
     </style>
 
     <style name="OmniJawsTheme" parent="@android:style/Theme.DeviceDefault.Settings">
@@ -15,5 +11,5 @@
         <item name="android:iconSpaceReserved">true</item>
     </style>
 
-    <style name="ActionPrimaryButton" parent="android:style/TextAppearance.Material.Button"/>
+    <style name="ActionPrimaryButton" parent="@style/Widget.MaterialComponents.Button"/>
 </resources>
