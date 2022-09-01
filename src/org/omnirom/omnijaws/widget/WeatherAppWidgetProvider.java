@@ -17,6 +17,7 @@
 */
 package org.omnirom.omnijaws.widget;
 
+import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -151,12 +152,17 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
             Log.i(TAG, "updateAllWeather at = " + new Date());
         }
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        if (appWidgetManager != null) {
+        KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+        if (appWidgetManager != null && !keyguardManager.inKeyguardRestrictedInputMode()) {
+	 try {
             ComponentName componentName = new ComponentName(context, WeatherAppWidgetProvider.class);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(componentName);
             for (int appWidgetId : appWidgetIds) {
                 updateWeather(context, appWidgetManager, appWidgetId);
             }
+          } catch (IllegalStateException ignored) {
+            // expected
+          }
         }
     }
 
@@ -165,12 +171,17 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
             Log.i(TAG, "showUpdateProgress");
         }
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        if (appWidgetManager != null) {
+        KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+        if (appWidgetManager != null && !keyguardManager.inKeyguardRestrictedInputMode()) {
+	 try {
             ComponentName componentName = new ComponentName(context, WeatherAppWidgetProvider.class);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(componentName);
             for (int appWidgetId : appWidgetIds) {
                 showProgress(context, appWidgetManager, appWidgetId);
             }
+          } catch (IllegalStateException ignored) {
+            // expected
+          }
         }
     }
 
@@ -179,12 +190,17 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
             Log.i(TAG, "showErrorState " + errorReason);
         }
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        if (appWidgetManager != null) {
+        KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+        if (appWidgetManager != null && !keyguardManager.inKeyguardRestrictedInputMode()) {
+	 try {
             ComponentName componentName = new ComponentName(context, WeatherAppWidgetProvider.class);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(componentName);
             for (int appWidgetId : appWidgetIds) {
                 showError(context, appWidgetManager, appWidgetId, errorReason);
             }
+          } catch (IllegalStateException ignored) {
+            // expected
+          }
         }
     }
 
