@@ -17,7 +17,6 @@
  */
 package org.omnirom.omnijaws;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +26,9 @@ import org.omnirom.omnijaws.client.OmniJawsClient;
 
 import java.util.Calendar;
 
-public class WeatherActivity extends Activity implements OmniJawsClient.OmniJawsObserver {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class WeatherActivity extends AppCompatActivity implements OmniJawsClient.OmniJawsObserver {
     private static final String TAG = "WeatherActivity";
     private static final boolean DEBUG = false;
     private DetailedWeatherView mDetailedView;

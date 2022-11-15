@@ -15,7 +15,7 @@
   along with this program.	If not, see <http://www.gnu.org/licenses/>.
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="org.omnirom.omnijaws.widget.WeatherAppWidgetConfigure"
+    android:configure="org.omnirom.omnijaws.widget.WeatherAppWidgetConfigureActivity"
     android:initialLayout="@layout/weather_appwidget_large"
     android:minResizeWidth="57dp"
     android:minResizeHeight="51dp"

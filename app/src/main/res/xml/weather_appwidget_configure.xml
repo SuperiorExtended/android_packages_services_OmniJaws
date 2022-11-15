@@ -34,8 +34,4 @@
             android:targetPackage="org.omnirom.omnijaws" />
     </PreferenceScreen>
 
-    <Preference
-        android:persistent="false"
-        android:widgetLayout="@layout/preference_button" />
-
 </PreferenceScreen>

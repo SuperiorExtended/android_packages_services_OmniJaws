@@ -16,24 +16,21 @@
 
 package org.omnirom.omnijaws;
 
-import static android.text.InputType.TYPE_CLASS_TEXT;
-import static android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES;
-
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.CallSuper;
+import androidx.appcompat.app.AlertDialog;
 import androidx.preference.EditTextPreference;
-import androidx.preference.EditTextPreferenceDialogFragment;
+import androidx.preference.EditTextPreferenceDialogFragmentCompat;
+
+import static android.text.InputType.TYPE_CLASS_TEXT;
 
 public class CustomLocationPreference extends EditTextPreference implements WeatherLocationTask.Callback {
     private CustomLocationPreferenceDialogFragment mFragment;
@@ -130,7 +127,7 @@ public class CustomLocationPreference extends EditTextPreference implements Weat
         WeatherUpdateService.scheduleUpdateNow(getContext());
     }
 
-    public static class CustomLocationPreferenceDialogFragment extends EditTextPreferenceDialogFragment {
+    public static class CustomLocationPreferenceDialogFragment extends EditTextPreferenceDialogFragmentCompat {
 
         public static CustomLocationPreferenceDialogFragment newInstance(String key) {
             final CustomLocationPreferenceDialogFragment fragment = new CustomLocationPreferenceDialogFragment();

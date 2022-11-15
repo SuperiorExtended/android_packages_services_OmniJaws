@@ -1,37 +1,45 @@
 <resources>
-    <style name="Weather" parent="@android:style/TextAppearance.DeviceDefault" >
+    <style name="Weather" parent="TextAppearance.Material3.BodyMedium" >
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">normal</item>
     </style>
 
-    <style name="WeatherSmall" parent="@android:style/TextAppearance.DeviceDefault" >
+    <style name="WeatherSmall" parent="TextAppearance.Material3.BodySmall" >
         <item name="android:textSize">12sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
 
-    <style name="WeatherLarge" parent="@android:style/TextAppearance.DeviceDefault" >
+    <style name="WeatherLarge" parent="TextAppearance.Material3.BodyLarge" >
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">normal</item>
     </style>
 
-    <style name="Theme.Settings" parent="@android:style/Theme.DeviceDefault.Settings" >
+    <style name="Theme.Settings" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">?attr/colorPrimary</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
+        <item name="preferenceTheme">@style/Omni.PreferenceTheme</item>
+        <item name="android:switchStyle">@style/Omni.SwitchStyle</item>
+        <item name="android:textAppearanceListItem">@style/Omni.PreferenceTitle</item>
     </style>
 
-    <style name="Theme.Activity" parent="@android:style/Theme.DeviceDefault.NoActionBar" >
+    <style name="Theme.Activity" parent="Theme.Material3.DayNight.NoActionBar" >
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">?attr/colorPrimary</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
     </style>
 
-    <style name="Theme.Widget" parent="@android:style/Theme.DeviceDefault.DayNight">
+    <style name="Theme.Widget" parent="Theme.Material3.DayNight.NoActionBar">
     </style>
 
-    <style name="ActionPrimaryButton" parent="android:Widget.DeviceDefault.Button.Colored">
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
-    <style name="WeatherBaseText" parent="@android:style/TextAppearance.DeviceDefault">
+    <style name="WeatherBaseText" parent="TextAppearance.Material3.BodyMedium">
         <item name="android:textColor">@android:color/white</item>
     </style>
 

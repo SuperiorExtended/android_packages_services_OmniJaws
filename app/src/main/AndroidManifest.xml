@@ -101,7 +101,7 @@
         </receiver>
 
         <activity
-            android:name=".widget.WeatherAppWidgetConfigure"
+            android:name=".widget.WeatherAppWidgetConfigureActivity"
             android:theme="@style/Theme.Settings"
             android:exported="true" >
             <intent-filter>

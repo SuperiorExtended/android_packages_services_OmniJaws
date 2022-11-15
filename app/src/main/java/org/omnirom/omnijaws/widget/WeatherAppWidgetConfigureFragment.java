@@ -15,24 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package org.omnirom.omnijaws.widget;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
-import android.view.MenuItem;
-import android.view.View;
 
 import org.omnirom.omnijaws.R;
 
-public class WeatherAppWidgetConfigure extends PreferenceActivity implements Preference.OnPreferenceChangeListener {
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.Preference.OnPreferenceChangeListener;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
+
+public class WeatherAppWidgetConfigureFragment extends PreferenceFragmentCompat implements OnPreferenceChangeListener {
 
     public static final String KEY_COLOR_THEME = "color_theme";
     public static final int COLOR_THEME_DEFAULT = 1;
@@ -41,47 +38,25 @@ public class WeatherAppWidgetConfigure extends PreferenceActivity implements Pre
     public static final int COLOR_THEME_SYSTEM = 1;
     public static final int COLOR_THEME_TRANSPARENT = 0;
 
-    private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private int mAppWidgetId;
     private ListPreference mColorTheme;
 
+    public WeatherAppWidgetConfigureFragment(int appWidgetId) {
+        super();
+        mAppWidgetId = appWidgetId;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            mAppWidgetId = extras.getInt(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID);
-        }
-
-        // If this activity was started with an intent without an app widget ID,
-        // finish with an error.
-        if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            finish();
-            return;
-        }
-
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.weather_appwidget_configure);
 
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        int value = prefs.getInt(WeatherAppWidgetConfigure.KEY_COLOR_THEME + "_" + mAppWidgetId, WeatherAppWidgetConfigure.COLOR_THEME_DEFAULT);
-        mColorTheme = (ListPreference) findPreference(WeatherAppWidgetConfigure.KEY_COLOR_THEME);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        int value = prefs.getInt(WeatherAppWidgetConfigureFragment.KEY_COLOR_THEME + "_" + mAppWidgetId, WeatherAppWidgetConfigureFragment.COLOR_THEME_DEFAULT);
+        mColorTheme = (ListPreference) findPreference(WeatherAppWidgetConfigureFragment.KEY_COLOR_THEME);
         mColorTheme.setValue(String.valueOf(value));
         int idx = mColorTheme.findIndexOfValue(String.valueOf(value));
         mColorTheme.setSummary(mColorTheme.getEntries()[idx]);
         mColorTheme.setOnPreferenceChangeListener(this);
-    }
-
-    public void handleOkClick(View v) {
-        WeatherAppWidgetProvider.updateAfterConfigure(this, mAppWidgetId);
-        Intent resultValue = new Intent();
-        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-        setResult(RESULT_OK, resultValue);
-        finish();
     }
 
     public static void clearPrefs(Context context, int id) {
@@ -91,35 +66,17 @@ public class WeatherAppWidgetConfigure extends PreferenceActivity implements Pre
 
     public static void remapPrefs(Context context, int oldId, int newId) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-
         int oldValue = prefs.getInt(KEY_COLOR_THEME + "_" + oldId, COLOR_THEME_DEFAULT);
         prefs.edit().putInt(KEY_COLOR_THEME + "_" + newId, oldValue).commit();
         prefs.edit().remove(KEY_COLOR_THEME + "_" + oldId).commit();
     }
 
     @Override
-    protected boolean isValidFragment(String fragmentName) {
-        return false;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         if (preference.equals(mColorTheme)) {
             String newTheme = (String) newValue;
-            SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
-            prefs.edit().putInt(WeatherAppWidgetConfigure.KEY_COLOR_THEME + "_" + mAppWidgetId, Integer.valueOf(newTheme)).commit();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+            prefs.edit().putInt(WeatherAppWidgetConfigureFragment.KEY_COLOR_THEME + "_" + mAppWidgetId, Integer.valueOf(newTheme)).commit();
             int idx = mColorTheme.findIndexOfValue(newTheme);
             mColorTheme.setSummary(mColorTheme.getEntries()[idx]);
             return true;

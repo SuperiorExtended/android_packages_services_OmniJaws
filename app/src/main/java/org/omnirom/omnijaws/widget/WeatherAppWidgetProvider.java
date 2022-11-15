@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -38,7 +37,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.util.ArrayMap;
 import android.util.Log;
@@ -58,6 +56,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+
+import androidx.preference.PreferenceManager;
 
 public class WeatherAppWidgetProvider extends AppWidgetProvider {
     private static final String TAG = "WeatherAppWidgetProvider";
@@ -87,7 +87,7 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
             if (LOGGING) {
                 Log.i(TAG, "onDeleted: " + id);
             }
-            WeatherAppWidgetConfigure.clearPrefs(context, id);
+            WeatherAppWidgetConfigureFragment.clearPrefs(context, id);
         }
     }
 
@@ -98,7 +98,7 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
             if (LOGGING) {
                 Log.i(TAG, "onRestored " + oldWidgetId + " " + newWidgetIds[i]);
             }
-            WeatherAppWidgetConfigure.remapPrefs(context, oldWidgetId, newWidgetIds[i]);
+            WeatherAppWidgetConfigureFragment.remapPrefs(context, oldWidgetId, newWidgetIds[i]);
             i++;
         }
     }
@@ -360,9 +360,9 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
 
     private static void setWidgetBackground(Context context, AppWidgetManager appWidgetManager, RemoteViews widget, int appWidgetId) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int theme = prefs.getInt(WeatherAppWidgetConfigure.KEY_COLOR_THEME + "_" + appWidgetId, WeatherAppWidgetConfigure.COLOR_THEME_DEFAULT);
+        int theme = prefs.getInt(WeatherAppWidgetConfigureFragment.KEY_COLOR_THEME + "_" + appWidgetId, WeatherAppWidgetConfigureFragment.COLOR_THEME_DEFAULT);
         widget.setColorInt(R.id.background_image, "setColorFilter", getBackgroundColor(context, appWidgetId), getBackgroundColor(context, appWidgetId));
-        widget.setInt(R.id.background_image, "setAlpha", theme == WeatherAppWidgetConfigure.COLOR_THEME_TRANSPARENT ? 96 : 255);
+        widget.setInt(R.id.background_image, "setAlpha", theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_TRANSPARENT ? 96 : 255);
     }
 
     private static BitmapDrawable getTintedBitmapDrawable(Context context, Drawable image, int textColor) {
@@ -457,15 +457,15 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
 
     private static int getBackgroundColor(Context context, int appWidgetId) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int theme = prefs.getInt(WeatherAppWidgetConfigure.KEY_COLOR_THEME + "_" + appWidgetId, WeatherAppWidgetConfigure.COLOR_THEME_DEFAULT);
-        if (theme == WeatherAppWidgetConfigure.COLOR_THEME_TRANSPARENT) {
+        int theme = prefs.getInt(WeatherAppWidgetConfigureFragment.KEY_COLOR_THEME + "_" + appWidgetId, WeatherAppWidgetConfigureFragment.COLOR_THEME_DEFAULT);
+        if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_TRANSPARENT) {
             return Color.BLACK;
-        } else if (theme == WeatherAppWidgetConfigure.COLOR_THEME_SYSTEM) {
+        } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_SYSTEM) {
             ContextThemeWrapper c = new ContextThemeWrapper(context, R.style.Theme_Widget);
             return getAttrColor(c, android.R.attr.colorBackground);
-        } else if (theme == WeatherAppWidgetConfigure.COLOR_THEME_DARK) {
+        } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_DARK) {
             return getSystemColor(context, "system_neutral1_900");
-        } else if (theme == WeatherAppWidgetConfigure.COLOR_THEME_LIGHT) {
+        } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_LIGHT) {
             return getSystemColor(context, "system_neutral1_50");
         }
         return Color.WHITE;
@@ -473,15 +473,15 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
 
     private static int getForegroundColor(Context context, int appWidgetId) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int theme = prefs.getInt(WeatherAppWidgetConfigure.KEY_COLOR_THEME + "_" + appWidgetId, WeatherAppWidgetConfigure.COLOR_THEME_DEFAULT);
-        if (theme == WeatherAppWidgetConfigure.COLOR_THEME_TRANSPARENT) {
+        int theme = prefs.getInt(WeatherAppWidgetConfigureFragment.KEY_COLOR_THEME + "_" + appWidgetId, WeatherAppWidgetConfigureFragment.COLOR_THEME_DEFAULT);
+        if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_TRANSPARENT) {
             return Color.WHITE;
-        } else if (theme == WeatherAppWidgetConfigure.COLOR_THEME_SYSTEM) {
+        } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_SYSTEM) {
             ContextThemeWrapper c = new ContextThemeWrapper(context, R.style.Theme_Widget);
             return getAttrColor(c, android.R.attr.textColorPrimary);
-        } else if (theme == WeatherAppWidgetConfigure.COLOR_THEME_DARK) {
+        } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_DARK) {
             return getSystemColor(context, "text_color_primary_device_default_dark");
-        } else if (theme == WeatherAppWidgetConfigure.COLOR_THEME_LIGHT) {
+        } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_LIGHT) {
             return getSystemColor(context, "text_color_primary_device_default_light");
         }
         return Color.BLACK;

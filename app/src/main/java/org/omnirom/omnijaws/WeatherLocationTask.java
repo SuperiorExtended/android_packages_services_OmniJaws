@@ -19,13 +19,14 @@ package org.omnirom.omnijaws;
 import java.util.HashSet;
 import java.util.List;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 public class WeatherLocationTask extends AsyncTask<Void, Void, List<WeatherInfo.WeatherLocation>> {
     private ProgressDialog mProgressDialog;

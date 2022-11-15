@@ -18,7 +18,6 @@
 package org.omnirom.omnijaws;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,17 +35,17 @@ import org.omnirom.omnijaws.widget.WeatherAppWidgetProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.preference.CheckBoxPreference;
+import androidx.appcompat.app.AlertDialog;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.Preference.OnPreferenceChangeListener;
-import androidx.preference.PreferenceFragment;
+import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreference;
 
-public class SettingsFragment extends PreferenceFragment implements OnPreferenceChangeListener,
+public class SettingsFragment extends PreferenceFragmentCompat implements OnPreferenceChangeListener,
         WeatherLocationTask.Callback, OmniJawsClient.OmniJawsObserver {
 
     private static final String CHRONUS_ICON_PACK_INTENT = "com.dvtonder.chronus.ICON_PACK";
@@ -54,7 +53,7 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 
     private SharedPreferences mPrefs;
     private ListPreference mProvider;
-    private CheckBoxPreference mCustomLocation;
+    private SwitchPreference mCustomLocation;
     private ListPreference mUnits;
     private SwitchPreference mEnable;
     private boolean mTriggerPermissionCheck;
@@ -88,7 +87,7 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
         mEnable.setChecked(Config.isEnabled(getContext()));
         mEnable.setOnPreferenceChangeListener(this);
 
-        mCustomLocation = (CheckBoxPreference) findPreference(Config.PREF_KEY_CUSTOM_LOCATION);
+        mCustomLocation = (SwitchPreference) findPreference(Config.PREF_KEY_CUSTOM_LOCATION);
 
         mProvider = (ListPreference) findPreference(Config.PREF_KEY_PROVIDER);
         mProvider.setOnPreferenceChangeListener(this);

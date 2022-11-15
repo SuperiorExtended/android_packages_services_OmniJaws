@@ -22,23 +22,26 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-public class SettingsActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
+
+public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            // android.R.id.home will be triggered in onOptionsItemSelected()
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        setContentView(R.layout.activity_settings);
+        setSupportActionBar(findViewById(R.id.toolbar));
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle(R.string.settings_title);
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content, new SettingsFragment()).commit();
     }
 
     @Override

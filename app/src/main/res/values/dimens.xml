@@ -18,4 +18,5 @@
     <dimen name="action_icon_size">30dp</dimen>
     <dimen name="widget_wide_image_size">50dp</dimen>
     <dimen name="widget_large_image_size">72dp</dimen>
+    <dimen name="content_side_margin">6dp</dimen>
 </resources>
