@@ -25,6 +25,7 @@
         <item name="preferenceTheme">@style/Omni.PreferenceTheme</item>
         <item name="android:switchStyle">@style/Omni.SwitchStyle</item>
         <item name="android:textAppearanceListItem">@style/Omni.PreferenceTitle</item>
+        <item name="dialogCornerRadius">8dp</item>
     </style>
 
     <style name="Theme.Activity" parent="Theme.Material3.DayNight.NoActionBar" >
