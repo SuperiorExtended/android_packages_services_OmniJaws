@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="org.omnirom.omnijaws"
     android:versionCode="13"
-    android:versionName="1.1" >
+    android:versionName="1.1">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -10,26 +10,30 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
 
     <permission android:name="org.omnirom.omnijaws.READ_WEATHER" />
     <uses-permission android:name="org.omnirom.omnijaws.READ_WEATHER" />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
-        android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
-        android:usesCleartextTraffic="true" >
+        android:label="@string/app_name"
+        android:usesCleartextTraffic="true">
 
-        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
 
         <activity
             android:name=".SettingsActivity"
             android:exported="true"
             android:label="@string/settings_title"
-            android:theme="@style/Theme.Settings" >
+            android:theme="@style/Theme.Settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -41,7 +45,7 @@
             android:exported="true"
             android:label="@string/activity_title"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.Activity" >
+            android:theme="@style/Theme.Activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -49,9 +53,10 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".WeatherUpdateService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true"/>
+        <service
+            android:name=".WeatherUpdateService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <provider
             android:name=".WeatherContentProvider"
@@ -59,7 +64,8 @@
             android:exported="true"
             android:readPermission="org.omnirom.omnijaws.READ_WEATHER" />
 
-        <receiver android:name=".SystemReceiver"
+        <receiver
+            android:name=".SystemReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -70,8 +76,8 @@
              weather_foo_<condition_id> -->
         <activity
             android:name=".outline"
-            android:label="Outline"
-            android:exported="false" >
+            android:exported="false"
+            android:label="Outline">
             <intent-filter>
                 <action android:name="org.omnirom.WeatherIconPack" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -80,8 +86,8 @@
 
         <activity
             android:name=".weather_color"
-            android:label="LockClock"
-            android:exported="false" >
+            android:exported="false"
+            android:label="LockClock">
             <intent-filter>
                 <action android:name="org.omnirom.WeatherIconPack" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -90,8 +96,8 @@
 
         <receiver
             android:name=".widget.WeatherAppWidgetProvider"
-            android:label="@string/weather_widget"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/weather_widget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.intent.action.LOCALE_CHANGED" />
@@ -103,8 +109,8 @@
 
         <activity
             android:name=".widget.WeatherAppWidgetConfigureActivity"
-            android:theme="@style/Theme.Settings"
-            android:exported="true" >
+            android:exported="true"
+            android:theme="@style/Theme.Settings">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
