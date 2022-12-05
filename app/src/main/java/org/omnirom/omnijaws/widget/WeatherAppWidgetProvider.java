@@ -45,6 +45,8 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import com.google.android.material.elevation.SurfaceColors;
+
 import org.omnirom.omnijaws.Config;
 import org.omnirom.omnijaws.R;
 import org.omnirom.omnijaws.SettingsActivity;
@@ -462,11 +464,13 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
             return Color.BLACK;
         } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_SYSTEM) {
             ContextThemeWrapper c = new ContextThemeWrapper(context, R.style.Theme_Widget);
-            return getAttrColor(c, android.R.attr.colorBackground);
+            return SurfaceColors.SURFACE_3.getColor(c);
         } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_DARK) {
-            return getSystemColor(context, "system_neutral1_900");
+            ContextThemeWrapper c = new ContextThemeWrapper(context, R.style.Theme_Widget_Dark);
+            return SurfaceColors.SURFACE_3.getColor(c);
         } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_LIGHT) {
-            return getSystemColor(context, "system_neutral1_50");
+            ContextThemeWrapper c = new ContextThemeWrapper(context, R.style.Theme_Widget_Light);
+            return SurfaceColors.SURFACE_3.getColor(c);
         }
         return Color.WHITE;
     }
@@ -480,9 +484,11 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
             ContextThemeWrapper c = new ContextThemeWrapper(context, R.style.Theme_Widget);
             return getAttrColor(c, android.R.attr.textColorPrimary);
         } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_DARK) {
-            return getSystemColor(context, "text_color_primary_device_default_dark");
+            ContextThemeWrapper c = new ContextThemeWrapper(context, R.style.Theme_Widget_Dark);
+            return getAttrColor(c, android.R.attr.textColorPrimary);
         } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_LIGHT) {
-            return getSystemColor(context, "text_color_primary_device_default_light");
+            ContextThemeWrapper c = new ContextThemeWrapper(context, R.style.Theme_Widget_Light);
+            return getAttrColor(c, android.R.attr.textColorPrimary);
         }
         return Color.BLACK;
     }

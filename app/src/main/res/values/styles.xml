@@ -46,7 +46,19 @@
     <style name="AppTheme.Overlay" parent="ThemeOverlay.Material3.DynamicColors.DayNight">
     </style>
 
-    <style name="Theme.Widget" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.Widget" parent="ThemeOverlay.Material3.DynamicColors.DayNight">
+        <item name="elevationOverlayEnabled">true</item>
+        <item name="elevationOverlayColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="Theme.Widget.Light" parent="ThemeOverlay.Material3.DynamicColors.Light">
+        <item name="elevationOverlayEnabled">true</item>
+        <item name="elevationOverlayColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="Theme.Widget.Dark" parent="ThemeOverlay.Material3.DynamicColors.Dark">
+        <item name="elevationOverlayEnabled">true</item>
+        <item name="elevationOverlayColor">?attr/colorPrimary</item>
     </style>
 
     <style name="WeatherBaseText" parent="TextAppearance.Material3.BodyMedium">
