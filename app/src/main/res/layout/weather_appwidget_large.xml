@@ -93,7 +93,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:orientation="horizontal"
-                        android:paddingTop="8dp">
+                        android:paddingTop="4dp">
 
                         <ImageView
                             android:id="@+id/current_wind_image"
@@ -159,8 +159,9 @@
                         android:layout_height="wrap_content"
                         android:gravity="end|bottom"
                         android:singleLine="true"
-                        android:paddingTop="8dp"
-                        android:textAppearance="@style/WeatherSmall" />
+                        android:paddingTop="4dp"
+                        android:textAppearance="@style/WeatherSmall"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
             </LinearLayout>

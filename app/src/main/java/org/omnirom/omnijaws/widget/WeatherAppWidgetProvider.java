@@ -193,11 +193,8 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
 
         initWidget(widget);
         setWidgetBackground(context, appWidgetManager, widget, appWidgetId);
-        if (withForecast) {
-            widget.setOnClickPendingIntent(R.id.weather_data, getSettingsIntent(context));
-        } else {
-            widget.setOnClickPendingIntent(R.id.weather_data, getWeatherActivityIntent(context));
-        }
+        widget.setOnClickPendingIntent(R.id.weather_data, getWeatherActivityIntent(context));
+
         int textColor = getForegroundColor(context, appWidgetId);
 
         if (weatherData == null) {
