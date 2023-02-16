@@ -3,6 +3,7 @@ package org.omnirom.omnijaws;
 import android.app.Application;
 
 import com.google.android.material.color.DynamicColors;
+import com.google.android.material.color.DynamicColorsOptions;
 
 public class App extends Application {
 
@@ -10,6 +11,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         DynamicColors.applyToActivitiesIfAvailable(
-                this, R.style.AppTheme_Overlay);
+                this,
+                new DynamicColorsOptions.Builder().setThemeOverlay(R.style.AppTheme_Overlay).build()
+        );
     }
 }
