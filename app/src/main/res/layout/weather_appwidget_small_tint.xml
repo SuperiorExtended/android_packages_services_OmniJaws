@@ -29,7 +29,7 @@
             android:id="@+id/background_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/weather_appwidget_bg"/>
+            android:src="@drawable/weather_appwidget_bg" />
     </LinearLayout>
 
     <LinearLayout
@@ -44,25 +44,33 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:gravity="center"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/current_image"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/current"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:scaleType="centerInside"
-                />
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/current_data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:singleLine="true"
-                android:textAppearance="@style/WeatherSmall" />
+                <ImageView
+                    android:id="@+id/current_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="centerInside"
+                    android:tint="?android:attr/textColorPrimary"/>
 
+                <TextView
+                    android:id="@+id/current_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:singleLine="true"
+                    android:textAppearance="@style/WeatherSmall" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

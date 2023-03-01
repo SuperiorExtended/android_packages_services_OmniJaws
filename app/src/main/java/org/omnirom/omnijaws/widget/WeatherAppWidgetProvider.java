@@ -24,28 +24,19 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.VectorDrawable;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.util.SizeF;
-import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.RemoteViews;
-
-import com.google.android.material.elevation.SurfaceColors;
 
 import org.omnirom.omnijaws.Config;
 import org.omnirom.omnijaws.R;
@@ -192,10 +183,7 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
         OmniJawsClient.WeatherInfo weatherData = weatherClient.getWeatherInfo();
 
         initWidget(widget);
-        setWidgetBackground(context, appWidgetManager, widget, appWidgetId);
         widget.setOnClickPendingIntent(R.id.weather_data, getWeatherActivityIntent(context));
-
-        int textColor = getForegroundColor(context, appWidgetId);
 
         if (weatherData == null) {
             Log.e(TAG, "updateWeather weatherData == null");
@@ -203,7 +191,6 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
             widget.setViewVisibility(R.id.current_weather_line, View.GONE);
             widget.setViewVisibility(R.id.info_container, View.VISIBLE);
             widget.setTextViewText(R.id.info_text, context.getResources().getString(R.string.omnijaws_service_waiting));
-            widget.setTextColor(R.id.info_text, textColor);
             return;
         }
 
@@ -211,7 +198,6 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
         String format = DateFormat.is24HourFormat(context) ? "HH:mm" : "hh:mm a";
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         widget.setTextViewText(R.id.current_weather_timestamp, sdf.format(timeStamp));
-        widget.setTextColor(R.id.current_weather_timestamp, textColor);
 
         sdf = new SimpleDateFormat("EE");
         Calendar cal = Calendar.getInstance();
@@ -220,100 +206,122 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
                 weatherData.tempUnits);
 
         Drawable d = weatherClient.getWeatherConditionImage(weatherData.forecasts.get(0).conditionCode);
-        BitmapDrawable bd = getTintedBitmapDrawable(context, d, textColor);
+        BitmapDrawable bd = getBitmapDrawable(context, d);
         widget.setImageViewBitmap(R.id.forecast_image_0, bd.getBitmap());
         widget.setTextViewText(R.id.forecast_text_0, dayShort);
-        widget.setTextColor(R.id.forecast_text_0, textColor);
         widget.setTextViewText(R.id.forecast_data_0, forecastData);
-        widget.setTextColor(R.id.forecast_data_0, textColor);
 
         cal.add(Calendar.DATE, 1);
         dayShort = sdf.format(new Date(cal.getTimeInMillis()));
         forecastData = getWeatherDataString(weatherData.forecasts.get(1).low, weatherData.forecasts.get(1).high,
                 weatherData.tempUnits);
         d = weatherClient.getWeatherConditionImage(weatherData.forecasts.get(1).conditionCode);
-        bd = getTintedBitmapDrawable(context, d, textColor);
+        bd = getBitmapDrawable(context, d);
         widget.setImageViewBitmap(R.id.forecast_image_1, bd.getBitmap());
         widget.setTextViewText(R.id.forecast_text_1, dayShort);
-        widget.setTextColor(R.id.forecast_text_1, textColor);
         widget.setTextViewText(R.id.forecast_data_1, forecastData);
-        widget.setTextColor(R.id.forecast_data_1, textColor);
 
         cal.add(Calendar.DATE, 1);
         dayShort = sdf.format(new Date(cal.getTimeInMillis()));
         forecastData = getWeatherDataString(weatherData.forecasts.get(2).low, weatherData.forecasts.get(2).high,
                 weatherData.tempUnits);
         d = weatherClient.getWeatherConditionImage(weatherData.forecasts.get(2).conditionCode);
-        bd = getTintedBitmapDrawable(context, d, textColor);
+        bd = getBitmapDrawable(context, d);
         widget.setImageViewBitmap(R.id.forecast_image_2, bd.getBitmap());
         widget.setTextViewText(R.id.forecast_text_2, dayShort);
-        widget.setTextColor(R.id.forecast_text_2, textColor);
         widget.setTextViewText(R.id.forecast_data_2, forecastData);
-        widget.setTextColor(R.id.forecast_data_2, textColor);
 
         cal.add(Calendar.DATE, 1);
         dayShort = sdf.format(new Date(cal.getTimeInMillis()));
         forecastData = getWeatherDataString(weatherData.forecasts.get(3).low, weatherData.forecasts.get(3).high,
                 weatherData.tempUnits);
         d = weatherClient.getWeatherConditionImage(weatherData.forecasts.get(3).conditionCode);
-        bd = getTintedBitmapDrawable(context, d, textColor);
+        bd = getBitmapDrawable(context, d);
         widget.setImageViewBitmap(R.id.forecast_image_3, bd.getBitmap());
         widget.setTextViewText(R.id.forecast_text_3, dayShort);
-        widget.setTextColor(R.id.forecast_text_3, textColor);
         widget.setTextViewText(R.id.forecast_data_3, forecastData);
-        widget.setTextColor(R.id.forecast_data_3, textColor);
 
         cal.add(Calendar.DATE, 1);
         dayShort = sdf.format(new Date(cal.getTimeInMillis()));
         forecastData = getWeatherDataString(weatherData.forecasts.get(4).low, weatherData.forecasts.get(4).high,
                 weatherData.tempUnits);
         d = weatherClient.getWeatherConditionImage(weatherData.forecasts.get(4).conditionCode);
-        bd = getTintedBitmapDrawable(context, d, textColor);
+        bd = getBitmapDrawable(context, d);
         widget.setImageViewBitmap(R.id.forecast_image_4, bd.getBitmap());
         widget.setTextViewText(R.id.forecast_text_4, dayShort);
-        widget.setTextColor(R.id.forecast_text_4, textColor);
         widget.setTextViewText(R.id.forecast_data_4, forecastData);
-        widget.setTextColor(R.id.forecast_data_4, textColor);
 
         String currentData = getWeatherDataString(weatherData.temp, null, weatherData.tempUnits);
         d = weatherClient.getWeatherConditionImage(weatherData.conditionCode);
-        bd = getTintedBitmapDrawable(context, d, textColor);
+        bd = getBitmapDrawable(context, d);
         widget.setImageViewBitmap(R.id.current_image, bd.getBitmap());
         widget.setTextViewText(R.id.current_text, context.getResources().getText(R.string.omnijaws_current_text));
-        widget.setTextColor(R.id.current_text, textColor);
-        widget.setTextColor(R.id.current_data, textColor);
         widget.setTextViewText(R.id.current_data, currentData);
 
-        ColorStateList iconTint = ColorStateList.valueOf(textColor);
         widget.setTextViewText(R.id.current_weather_city, weatherData.city);
-        widget.setTextColor(R.id.current_weather_city, textColor);
 
         widget.setTextViewText(R.id.current_humidity, weatherData.humidity);
-        widget.setTextColor(R.id.current_humidity, textColor);
-        widget.setImageViewBitmap(R.id.current_humidity_image,
-                getTintedBitmapDrawable(context, context.getResources().getDrawable(R.drawable.ic_humidity_symbol_small, null), textColor).getBitmap());
+        widget.setImageViewResource(R.id.current_humidity_image, R.drawable.ic_humidity_symbol_small);
 
         widget.setTextViewText(R.id.current_wind, weatherData.windSpeed + " " + weatherData.windUnits);
-        widget.setTextColor(R.id.current_wind, textColor);
-        widget.setImageViewBitmap(R.id.current_wind_image,
-                getTintedBitmapDrawable(context, context.getResources().getDrawable(R.drawable.ic_wind_symbol_small, null), textColor).getBitmap());
+        widget.setImageViewResource(R.id.current_wind_image, R.drawable.ic_wind_symbol_small);
 
         widget.setTextViewText(R.id.current_wind_direction, weatherData.pinWheel);
-        widget.setTextColor(R.id.current_wind_direction, textColor);
-        widget.setImageViewBitmap(R.id.current_wind_direction_image,
-                getTintedBitmapDrawable(context, context.getResources().getDrawable(R.drawable.ic_wind_direction_symbol_small, null), textColor).getBitmap());
+        widget.setImageViewResource(R.id.current_wind_direction_image, R.drawable.ic_wind_direction_symbol_small);
+
     }
 
     public static RemoteViews createRemoteViews(Context context, AppWidgetManager appWidgetManager, int appWidgetId, OmniJawsClient weatherClient) {
         if (LOGGING) {
             Log.i(TAG, "createRemoteViews");
         }
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        int theme = prefs.getInt(WeatherAppWidgetConfigureFragment.KEY_COLOR_THEME + "_" + appWidgetId, WeatherAppWidgetConfigureFragment.COLOR_THEME_DEFAULT);
 
-        RemoteViews smallView = new RemoteViews(context.getPackageName(), R.layout.weather_appwidget_small);
+        int smallWidgetResId = R.layout.weather_appwidget_small_system;
+        int largelWidgetResId = R.layout.weather_appwidget_large_system;
+        int wideWidgetResId = R.layout.weather_appwidget_wide_system;
+
+        switch (theme) {
+            case 1:
+                if (weatherClient.isDefaultIconPackage()) {
+                    smallWidgetResId = R.layout.weather_appwidget_small_tint_system;
+                    largelWidgetResId = R.layout.weather_appwidget_large_tint_system;
+                    wideWidgetResId = R.layout.weather_appwidget_wide_tint_system;
+                } else {
+                    smallWidgetResId = R.layout.weather_appwidget_small_system;
+                    largelWidgetResId = R.layout.weather_appwidget_large_system;
+                    wideWidgetResId = R.layout.weather_appwidget_wide_system;
+                }
+                break;
+            case 2:
+                if (weatherClient.isDefaultIconPackage()) {
+                    smallWidgetResId = R.layout.weather_appwidget_small_tint_dark;
+                    largelWidgetResId = R.layout.weather_appwidget_large_tint_dark;
+                    wideWidgetResId = R.layout.weather_appwidget_wide_tint_dark;
+                } else {
+                    smallWidgetResId = R.layout.weather_appwidget_small_dark;
+                    largelWidgetResId = R.layout.weather_appwidget_large_dark;
+                    wideWidgetResId = R.layout.weather_appwidget_wide_dark;
+                }
+                break;
+            case 3:
+                if (weatherClient.isDefaultIconPackage()) {
+                    smallWidgetResId = R.layout.weather_appwidget_small_tint_light;
+                    largelWidgetResId = R.layout.weather_appwidget_large_tint_light;
+                    wideWidgetResId = R.layout.weather_appwidget_wide_tint_light;
+                } else {
+                    smallWidgetResId = R.layout.weather_appwidget_small_light;
+                    largelWidgetResId = R.layout.weather_appwidget_large_light;
+                    wideWidgetResId = R.layout.weather_appwidget_wide_light;
+                }
+                break;
+        }
+        RemoteViews smallView = new RemoteViews(context.getPackageName(), smallWidgetResId);
         setupRemoteView(context, appWidgetManager, appWidgetId, smallView, weatherClient, false);
-        RemoteViews largeView = new RemoteViews(context.getPackageName(), R.layout.weather_appwidget_large);
+        RemoteViews largeView = new RemoteViews(context.getPackageName(), largelWidgetResId);
         setupRemoteView(context, appWidgetManager, appWidgetId, largeView, weatherClient, true);
-        RemoteViews wideView = new RemoteViews(context.getPackageName(), R.layout.weather_appwidget_wide);
+        RemoteViews wideView = new RemoteViews(context.getPackageName(), wideWidgetResId);
         setupRemoteView(context, appWidgetManager, appWidgetId, wideView, weatherClient, true);
         Map<SizeF, RemoteViews> viewMapping = new ArrayMap<>();
         viewMapping.put(new SizeF(50f, 50f), smallView);
@@ -329,10 +337,8 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
         if (LOGGING) {
             Log.i(TAG, "showError " + appWidgetId + " errorReason = " + errorReason);
         }
-        int textColor = getForegroundColor(context, appWidgetId);
 
         initWidget(widget);
-        setWidgetBackground(context, appWidgetManager, widget, appWidgetId);
         widget.setOnClickPendingIntent(R.id.weather_data, getSettingsIntent(context));
 
         if (errorReason == EXTRA_ERROR_DISABLED) {
@@ -340,14 +346,12 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
             widget.setViewVisibility(R.id.current_weather_line, View.GONE);
             widget.setViewVisibility(R.id.info_container, View.VISIBLE);
             widget.setTextViewText(R.id.info_text, context.getResources().getString(R.string.omnijaws_service_disabled));
-            widget.setTextColor(R.id.info_text, textColor);
         } else {
             // should never happen
             widget.setViewVisibility(R.id.condition_line, View.GONE);
             widget.setViewVisibility(R.id.current_weather_line, View.GONE);
             widget.setViewVisibility(R.id.info_container, View.VISIBLE);
             widget.setTextViewText(R.id.info_text, context.getResources().getString(R.string.omnijaws_service_unkown));
-            widget.setTextColor(R.id.info_text, textColor);
         }
     }
 
@@ -357,17 +361,7 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
         widget.setViewVisibility(R.id.info_container, View.GONE);
     }
 
-    private static void setWidgetBackground(Context context, AppWidgetManager appWidgetManager, RemoteViews widget, int appWidgetId) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int theme = prefs.getInt(WeatherAppWidgetConfigureFragment.KEY_COLOR_THEME + "_" + appWidgetId, WeatherAppWidgetConfigureFragment.COLOR_THEME_DEFAULT);
-        widget.setColorInt(R.id.background_image, "setColorFilter", getBackgroundColor(context, appWidgetId), getBackgroundColor(context, appWidgetId));
-        widget.setInt(R.id.background_image, "setAlpha", theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_TRANSPARENT ? 96 : 255);
-    }
-
-    private static BitmapDrawable getTintedBitmapDrawable(Context context, Drawable image, int textColor) {
-        if (image instanceof VectorDrawable) {
-            image = applyTint(context, image, textColor);
-        }
+    private static BitmapDrawable getBitmapDrawable(Context context, Drawable image) {
         final Canvas canvas = new Canvas();
         canvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG,
                 Paint.FILTER_BITMAP_FLAG));
@@ -390,35 +384,6 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    private static Drawable applyTint(Context context, Drawable icon, int color) {
-        icon = icon.mutate();
-        icon.setTint(color);
-        return icon;
-    }
-
-    private static BitmapDrawable shadow(Resources resources, Bitmap b) {
-        final Canvas canvas = new Canvas();
-        canvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG,
-                Paint.FILTER_BITMAP_FLAG));
-
-        BlurMaskFilter blurFilter = new BlurMaskFilter(5, BlurMaskFilter.Blur.OUTER);
-        Paint shadowPaint = new Paint();
-        shadowPaint.setColor(Color.BLACK);
-        shadowPaint.setMaskFilter(blurFilter);
-
-        int[] offsetXY = new int[2];
-        Bitmap b2 = b.extractAlpha(shadowPaint, offsetXY);
-
-        Bitmap bmResult = Bitmap.createBitmap(b.getWidth(), b.getHeight(),
-                Bitmap.Config.ARGB_8888);
-
-        canvas.setBitmap(bmResult);
-        canvas.drawBitmap(b2, offsetXY[0], offsetXY[1], null);
-        canvas.drawBitmap(b, 0, 0, null);
-
-        return new BitmapDrawable(resources, bmResult);
-    }
-
     public static void updateAllWidgets(Context context) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         ComponentName thisAppWidgetComponentName = new ComponentName(context, WeatherAppWidgetProvider.class);
@@ -436,58 +401,4 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
             WeatherAppWidgetProvider.updateWeather(context, appWidgetManager, appWidgetId);
         }
     }
-
-    private static int getSystemColor(Context context, String colorName) {
-        Resources system = context.getResources();
-        return system.getColor(
-                system.getIdentifier(
-                        colorName,
-                        "color", "android"
-                ), null
-        );
-    }
-
-    private static int getAttrColor(Context context, int attr) {
-        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
-        int color = ta.getColor(0, 0);
-        ta.recycle();
-        return color;
-    }
-
-    private static int getBackgroundColor(Context context, int appWidgetId) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int theme = prefs.getInt(WeatherAppWidgetConfigureFragment.KEY_COLOR_THEME + "_" + appWidgetId, WeatherAppWidgetConfigureFragment.COLOR_THEME_DEFAULT);
-        if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_TRANSPARENT) {
-            return Color.BLACK;
-        } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_SYSTEM) {
-            ContextThemeWrapper c = new ContextThemeWrapper(context, R.style.Theme_Widget);
-            return SurfaceColors.SURFACE_3.getColor(c);
-        } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_DARK) {
-            ContextThemeWrapper c = new ContextThemeWrapper(context, R.style.Theme_Widget_Dark);
-            return SurfaceColors.SURFACE_3.getColor(c);
-        } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_LIGHT) {
-            ContextThemeWrapper c = new ContextThemeWrapper(context, R.style.Theme_Widget_Light);
-            return SurfaceColors.SURFACE_3.getColor(c);
-        }
-        return Color.WHITE;
-    }
-
-    private static int getForegroundColor(Context context, int appWidgetId) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int theme = prefs.getInt(WeatherAppWidgetConfigureFragment.KEY_COLOR_THEME + "_" + appWidgetId, WeatherAppWidgetConfigureFragment.COLOR_THEME_DEFAULT);
-        if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_TRANSPARENT) {
-            return Color.WHITE;
-        } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_SYSTEM) {
-            ContextThemeWrapper c = new ContextThemeWrapper(context, R.style.Theme_Widget);
-            return getAttrColor(c, android.R.attr.textColorPrimary);
-        } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_DARK) {
-            ContextThemeWrapper c = new ContextThemeWrapper(context, R.style.Theme_Widget_Dark);
-            return getAttrColor(c, android.R.attr.textColorPrimary);
-        } else if (theme == WeatherAppWidgetConfigureFragment.COLOR_THEME_LIGHT) {
-            ContextThemeWrapper c = new ContextThemeWrapper(context, R.style.Theme_Widget_Light);
-            return getAttrColor(c, android.R.attr.textColorPrimary);
-        }
-        return Color.BLACK;
-    }
-
 }

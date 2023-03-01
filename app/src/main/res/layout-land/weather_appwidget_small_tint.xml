@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerInside"
-                />
+                android:tint="?android:attr/textColorPrimary"/>
 
             <TextView
                 android:id="@+id/current_data"

@@ -428,4 +428,8 @@ public class OmniJawsClient {
             mReceiver = null;
         }
     }
+
+    public boolean isDefaultIconPackage() {
+        return mIconPrefix.equals(ICON_PREFIX_DEFAULT);
+    }
 }

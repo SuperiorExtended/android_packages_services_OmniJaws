@@ -55,21 +55,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top|start"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <ImageView
                         android:id="@+id/current_image"
                         android:layout_width="@dimen/widget_large_image_size"
                         android:layout_height="@dimen/widget_large_image_size"
-                        android:layout_gravity="center_vertical"
-                        android:scaleType="centerInside"
-                        />
+                        android:layout_gravity="center_horizontal"
+                        android:tint="?android:attr/textColorPrimary"
+                        android:scaleType="centerInside" />
 
                     <TextView
                         android:id="@+id/current_data"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
+                        android:layout_gravity="center_horizontal"
                         android:singleLine="true"
                         android:textAppearance="@style/WeatherLarge" />
 
@@ -94,20 +94,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:paddingTop="4dp">
 
                         <ImageView
                             android:id="@+id/current_wind_image"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            />
+                            android:tint="?android:attr/textColorPrimary"/>
 
                         <TextView
                             android:id="@+id/current_wind"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
+                            android:gravity="end"
                             android:paddingStart="4dp"
                             android:singleLine="true"
                             android:textAppearance="@style/Weather" />
@@ -116,32 +118,41 @@
                             android:id="@+id/current_wind_direction_image"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
                             android:paddingStart="8dp"
-                            />
+                            android:layout_gravity="center_vertical"
+                            android:tint="?android:attr/textColorPrimary"/>
 
                         <TextView
                             android:id="@+id/current_wind_direction"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
+                            android:gravity="end"
                             android:paddingStart="4dp"
                             android:singleLine="true"
                             android:textAppearance="@style/Weather" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:orientation="horizontal">
 
                         <ImageView
                             android:id="@+id/current_humidity_image"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:paddingStart="8dp"
-                            />
+                            android:tint="?android:attr/textColorPrimary"/>
 
                         <TextView
                             android:id="@+id/current_humidity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
+                            android:gravity="end"
                             android:paddingStart="4dp"
                             android:singleLine="true"
                             android:textAppearance="@style/Weather" />
@@ -153,7 +164,9 @@
                         android:layout_height="wrap_content"
                         android:gravity="end|bottom"
                         android:singleLine="true"
-                        android:textAppearance="@style/WeatherSmall" />
+                        android:paddingTop="4dp"
+                        android:textAppearance="@style/WeatherSmall"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
             </LinearLayout>
@@ -184,7 +197,7 @@
                         android:layout_height="@dimen/widget_wide_image_size"
                         android:layout_gravity="center_horizontal"
                         android:scaleType="centerInside"
-                        />
+                        android:tint="?android:attr/textColorPrimary"/>
 
                     <TextView
                         android:id="@+id/forecast_data_0"
@@ -218,7 +231,7 @@
                         android:layout_height="@dimen/widget_wide_image_size"
                         android:layout_gravity="center_horizontal"
                         android:scaleType="centerInside"
-                        />
+                        android:tint="?android:attr/textColorPrimary"/>
 
                     <TextView
                         android:id="@+id/forecast_data_1"
@@ -252,7 +265,7 @@
                         android:layout_height="@dimen/widget_wide_image_size"
                         android:layout_gravity="center_horizontal"
                         android:scaleType="centerInside"
-                        />
+                        android:tint="?android:attr/textColorPrimary"/>
 
                     <TextView
                         android:id="@+id/forecast_data_2"
@@ -286,7 +299,7 @@
                         android:layout_height="@dimen/widget_wide_image_size"
                         android:layout_gravity="center_horizontal"
                         android:scaleType="centerInside"
-                        />
+                        android:tint="?android:attr/textColorPrimary"/>
 
 
                     <TextView
@@ -321,8 +334,7 @@
                         android:layout_height="@dimen/widget_wide_image_size"
                         android:layout_gravity="center_horizontal"
                         android:scaleType="centerInside"
-                        />
-
+                        android:tint="?android:attr/textColorPrimary"/>
 
                     <TextView
                         android:id="@+id/forecast_data_4"

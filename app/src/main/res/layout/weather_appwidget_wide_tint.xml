@@ -60,7 +60,7 @@
                     android:layout_height="@dimen/widget_wide_image_size"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="centerInside"
-                    />
+                    android:tint="?android:attr/textColorPrimary"/>
 
                 <TextView
                     android:id="@+id/current_data"
@@ -86,7 +86,7 @@
                     android:layout_height="@dimen/widget_wide_image_size"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="centerInside"
-                    />
+                    android:tint="?android:attr/textColorPrimary"/>
 
                 <TextView
                     android:id="@+id/forecast_data_0"
@@ -112,7 +112,7 @@
                     android:layout_height="@dimen/widget_wide_image_size"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="centerInside"
-                    />
+                    android:tint="?android:attr/textColorPrimary"/>
 
                 <TextView
                     android:id="@+id/forecast_data_1"
@@ -138,7 +138,7 @@
                     android:layout_height="@dimen/widget_wide_image_size"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="centerInside"
-                    />
+                    android:tint="?android:attr/textColorPrimary"/>
 
                 <TextView
                     android:id="@+id/forecast_data_2"
@@ -164,7 +164,7 @@
                     android:layout_height="@dimen/widget_wide_image_size"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="centerInside"
-                    />
+                    android:tint="?android:attr/textColorPrimary"/>
 
 
                 <TextView
@@ -191,7 +191,7 @@
                     android:layout_height="@dimen/widget_wide_image_size"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="centerInside"
-                    />
+                    android:tint="?android:attr/textColorPrimary"/>
 
                 <TextView
                     android:id="@+id/forecast_data_4"
