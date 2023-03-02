@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/condition_line"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|start"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/forecast_0"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/forecast_image_0"
+            android:layout_width="@dimen/widget_wide_image_size"
+            android:layout_height="@dimen/widget_wide_image_size"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerInside" />
+
+        <TextView
+            android:id="@+id/forecast_data_0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:singleLine="true"
+            android:textAppearance="@style/WeatherSmall" />
+
+        <TextView
+            android:id="@+id/forecast_text_0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:singleLine="true"
+            android:textAppearance="@style/Weather" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/forecast_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/forecast_image_1"
+            android:layout_width="@dimen/widget_wide_image_size"
+            android:layout_height="@dimen/widget_wide_image_size"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerInside" />
+
+        <TextView
+            android:id="@+id/forecast_data_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:singleLine="true"
+            android:textAppearance="@style/WeatherSmall" />
+
+        <TextView
+            android:id="@+id/forecast_text_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:singleLine="true"
+            android:textAppearance="@style/Weather" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/forecast_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/forecast_image_2"
+            android:layout_width="@dimen/widget_wide_image_size"
+            android:layout_height="@dimen/widget_wide_image_size"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerInside" />
+
+        <TextView
+            android:id="@+id/forecast_data_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:singleLine="true"
+            android:textAppearance="@style/WeatherSmall" />
+
+        <TextView
+            android:id="@+id/forecast_text_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:singleLine="true"
+            android:textAppearance="@style/Weather" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/forecast_3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/forecast_image_3"
+            android:layout_width="@dimen/widget_wide_image_size"
+            android:layout_height="@dimen/widget_wide_image_size"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerInside" />
+
+
+        <TextView
+            android:id="@+id/forecast_data_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:singleLine="true"
+            android:textAppearance="@style/WeatherSmall" />
+
+        <TextView
+            android:id="@+id/forecast_text_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:singleLine="true"
+            android:textAppearance="@style/Weather" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/forecast_4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/forecast_image_4"
+            android:layout_width="@dimen/widget_wide_image_size"
+            android:layout_height="@dimen/widget_wide_image_size"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerInside" />
+
+        <TextView
+            android:id="@+id/forecast_data_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:singleLine="true"
+            android:textAppearance="@style/WeatherSmall" />
+
+        <TextView
+            android:id="@+id/forecast_text_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:singleLine="true"
+            android:textAppearance="@style/Weather" />
+
+    </LinearLayout>
+</LinearLayout>

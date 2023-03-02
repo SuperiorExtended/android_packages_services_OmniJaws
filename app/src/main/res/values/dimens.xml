@@ -7,16 +7,22 @@
     <dimen name="min_weather_widget_resize_width">40dp</dimen>
     <dimen name="min_weather_widget_resize_height">40dp</dimen>
     <dimen name="weather_refresh_icon_size">40dp</dimen>
-    <dimen name="widget_padding">5dp</dimen>
-    <dimen name="widget_padding_large">16dp</dimen>
+    <dimen name="widget_padding">8dp</dimen>
+    <dimen name="widget_padding_small">4dp</dimen>
     <dimen name="medium_text_size">20sp</dimen>
     <dimen name="big_text_size">60sp</dimen>
     <dimen name="current_height">150dp</dimen>
     <dimen name="text_line_height">60dp</dimen>
     <dimen name="forecast_text_size">16sp</dimen>
-    <dimen name="header_text_size">22dp</dimen>
+    <dimen name="header_text_size">28sp</dimen>
     <dimen name="action_icon_size">30dp</dimen>
-    <dimen name="widget_wide_image_size">46dp</dimen>
+    <dimen name="widget_wide_image_size">40dp</dimen>
     <dimen name="widget_large_image_size">70dp</dimen>
+    <dimen name="widget_small_image_size">50dp</dimen>
+    <dimen name="widget_medium_image_size">60dp</dimen>
     <dimen name="content_side_margin">6dp</dimen>
+    <dimen name="activity_forecast_image_size">50dp</dimen>
+    <dimen name="activity_actions_image_size">32dp</dimen>
+    <dimen name="activity_city_side_margin">64dp</dimen>
+
 </resources>

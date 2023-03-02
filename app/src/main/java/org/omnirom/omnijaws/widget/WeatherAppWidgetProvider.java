@@ -31,7 +31,6 @@ import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.util.SizeF;
@@ -194,12 +193,7 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
             return;
         }
 
-        Long timeStamp = weatherData.timeStamp;
-        String format = DateFormat.is24HourFormat(context) ? "HH:mm" : "hh:mm a";
-        SimpleDateFormat sdf = new SimpleDateFormat(format);
-        widget.setTextViewText(R.id.current_weather_timestamp, sdf.format(timeStamp));
-
-        sdf = new SimpleDateFormat("EE");
+        SimpleDateFormat sdf = new SimpleDateFormat("EE");
         Calendar cal = Calendar.getInstance();
         String dayShort = sdf.format(new Date(cal.getTimeInMillis()));
         String forecastData = getWeatherDataString(weatherData.forecasts.get(0).low, weatherData.forecasts.get(0).high,
@@ -257,18 +251,15 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
         widget.setImageViewBitmap(R.id.current_image, bd.getBitmap());
         widget.setTextViewText(R.id.current_text, context.getResources().getText(R.string.omnijaws_current_text));
         widget.setTextViewText(R.id.current_data, currentData);
-
         widget.setTextViewText(R.id.current_weather_city, weatherData.city);
-
         widget.setTextViewText(R.id.current_humidity, weatherData.humidity);
-        widget.setImageViewResource(R.id.current_humidity_image, R.drawable.ic_humidity_symbol_small);
-
         widget.setTextViewText(R.id.current_wind, weatherData.windSpeed + " " + weatherData.windUnits);
-        widget.setImageViewResource(R.id.current_wind_image, R.drawable.ic_wind_symbol_small);
-
         widget.setTextViewText(R.id.current_wind_direction, weatherData.pinWheel);
-        widget.setImageViewResource(R.id.current_wind_direction_image, R.drawable.ic_wind_direction_symbol_small);
 
+        Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
+        int minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+        boolean showConditionLine = minWidth > 300;
+        widget.setViewVisibility(R.id.current_condition_line, showConditionLine ? View.VISIBLE : View.GONE);
     }
 
     public static RemoteViews createRemoteViews(Context context, AppWidgetManager appWidgetManager, int appWidgetId, OmniJawsClient weatherClient) {
@@ -326,7 +317,7 @@ public class WeatherAppWidgetProvider extends AppWidgetProvider {
         Map<SizeF, RemoteViews> viewMapping = new ArrayMap<>();
         viewMapping.put(new SizeF(50f, 50f), smallView);
         viewMapping.put(new SizeF(260f, 150f), largeView);
-        viewMapping.put(new SizeF(260f, 50f), wideView);
+        viewMapping.put(new SizeF(200f, 50f), wideView);
         RemoteViews remoteViews = new RemoteViews(viewMapping);
         return remoteViews;
     }

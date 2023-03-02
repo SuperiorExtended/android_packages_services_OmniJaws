@@ -4,5 +4,5 @@
     <dimen name="current_height">90dp</dimen>
     <dimen name="text_line_height">40dp</dimen>
     <dimen name="forecast_text_size">16sp</dimen>
-    <dimen name="header_text_size">20dp</dimen>
+    <dimen name="header_text_size">24dp</dimen>
 </resources>

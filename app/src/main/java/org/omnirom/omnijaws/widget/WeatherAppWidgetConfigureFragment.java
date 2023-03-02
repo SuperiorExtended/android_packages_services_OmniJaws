@@ -32,7 +32,7 @@ import androidx.preference.PreferenceManager;
 public class WeatherAppWidgetConfigureFragment extends PreferenceFragmentCompat implements OnPreferenceChangeListener {
 
     public static final String KEY_COLOR_THEME = "color_theme";
-    public static final int COLOR_THEME_DEFAULT = 3;
+    public static final int COLOR_THEME_DEFAULT = 1;
     public static final int COLOR_THEME_LIGHT = 3;
     public static final int COLOR_THEME_DARK = 2;
     public static final int COLOR_THEME_SYSTEM = 1;
