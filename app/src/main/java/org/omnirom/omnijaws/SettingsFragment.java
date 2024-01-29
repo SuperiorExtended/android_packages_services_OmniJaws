@@ -134,7 +134,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements OnPref
 
         mProvider = (ListPreference) findPreference(Config.PREF_KEY_PROVIDER);
         mProvider.setOnPreferenceChangeListener(this);
-        int idx = mProvider.findIndexOfValue(mPrefs.getString(Config.PREF_KEY_PROVIDER, "0"));
+        int idx = mProvider.findIndexOfValue(mPrefs.getString(Config.PREF_KEY_PROVIDER, "1"));
         if (idx == -1) {
             idx = 0;
         }

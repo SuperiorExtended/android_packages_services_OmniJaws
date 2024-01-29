@@ -44,7 +44,7 @@ public class Config {
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(context);
 
-        switch (prefs.getString(PREF_KEY_PROVIDER, "0")) {
+        switch (prefs.getString(PREF_KEY_PROVIDER, "1")) {
             case "0":
                 return new OpenWeatherMapProvider(context);
             case "1":
@@ -58,7 +58,7 @@ public class Config {
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(context);
 
-        String provider = prefs.getString(PREF_KEY_PROVIDER, "0");
+        String provider = prefs.getString(PREF_KEY_PROVIDER, "1");
         switch (provider) {
             case "0":
                 return "OpenWeatherMap";
